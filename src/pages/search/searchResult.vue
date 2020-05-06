@@ -19,7 +19,7 @@
         <!-- 头部中间的大搜索框 -->
         <!-- search()函数表示记录历史记录并跳转页面 -->
         <div class="mid">
-          <i class="iconfont icon-sousuo"></i>
+          <i class="iconfont icon-RectangleCopy1"></i>
           <input
             v-model="searchText"
             type="text"
@@ -35,17 +35,26 @@
 
         <!-- 头部右边的登录/个人中心 -->
         <div class="right">
-          <div>登录</div>
-          <div>注册</div>
-          <!-- <div><i class="iconfont icon-geren"></i></div> -->
+          <div v-if="isShowusername" class="uesrnameform">
+               <div class="usernameitem" @click="gotocenter">{{username}}</div>
+               <div class="outlogin" @click="outoflogin">退出登录</div>
+          </div>
+             <div class = "btn" @click="login" v-if="!isShowusername">登录</div>
+             <div class = "btn" @click="register" v-if="!isShowusername">注册</div>
+         
+
+          <!-- <div><i class="iconfont icon-RectangleCopy3"></i></div> -->
         </div>
       </div>
+      <div :class="isShowlogin===true||isShowregister===true?'op':''"></div>
+      <loginpart v-show="isShowlogin"></loginpart><!--登录-->
+      <registerpart v-show="isShowregister"></registerpart> <!--注册-->
       <!--添加网站选项-->
       <searchwebsitebar></searchwebsitebar>
       <!--商品排序选项按钮栏-->
       <searchsortbar></searchsortbar>
     </div>
-
+     
     <!--添加商品-->
       <Goods></Goods>
 
@@ -102,6 +111,8 @@ import searchwebsitebar from "@/components/searchwebsitebar.vue";
 import searchsortbar from "@/components/searchsortbar.vue";
 import Goods from "@/components/Goods.vue";
 import gotop from "@/components/gotop.vue";
+import loginpart from '@/components/login.vue'
+import registerpart from '@/components/register.vue'
 import axiospostsearch from "@/axios/axiosgetcourse.js"; //引入axios获得的课程
 import axiosgetcount from "@/axios/axiosgetcount.js"; //引入axios获得的课程总数
 export default {
@@ -109,13 +120,29 @@ export default {
     return {
       isFixed: false, //是否固定头部搜索栏
       searchText: "", //搜索框的内容
+      username:"",
+      isShowusername:false,
     };
   },
   components: {
     searchwebsitebar, //搜索页面checkbox网站选择那里的组件
     searchsortbar, // 搜索页面排序按钮那里
     Goods, //商品列表
-    gotop //返回顶部
+    gotop, //返回顶部
+    loginpart, //登录页面
+    registerpart,//注册页面
+  },
+  created(){
+     this.username = sessionStorage.getItem("curusername");
+     this.isShowusername = sessionStorage.getItem("isShowusername");
+     if(this.isShowusername==null){
+       this.isShowusername=false
+       this.username=""
+     }
+     if(this.isShowusername=="false"){
+       this.isShowusername=false
+       this.username=""
+     }
   },
   computed: {
     isShowpager(){
@@ -140,7 +167,14 @@ export default {
     pagers() {
       //总共的页数
       return this.$store.state.pagers;
-    }
+    },
+     isShowlogin(){
+         return this.$store.state.isShowlogin
+      },
+       isShowregister()
+      {
+        return this.$store.state.isShowregister;
+      },
   },
   mounted() {
     /*监听滑动块移动的距离，并判断是否固定顶部栏 */
@@ -281,7 +315,22 @@ export default {
           this.$store.commit('ISSHOWPAGER',true);
         }
       );
-    }
+    },
+      login(){
+        this.$store.commit("ISSHOWLOGIN",true)
+      },
+      register(){
+        this.$store.commit("ISSHOWREGISTER",true)
+      },
+      outoflogin(){  
+         sessionStorage.setItem("curusername", ""); 
+         sessionStorage.setItem("isShowusername",false);
+         sessionStorage.setItem("token","");  
+        this.$router.go(0)
+      },
+      gotocenter(){
+        this.$router.push({path:'./center'});
+      }
   }
 };
 </script>
@@ -373,7 +422,7 @@ export default {
   /* position: absolute; */
   height: 70px;
 }
-#header .mid .icon-sousuo {
+#header .mid .icon-RectangleCopy1 {
   /*顶部栏中间搜索框左侧的搜索图标的样式 */
   z-index: 100;
   color: #b88b8b;
@@ -386,7 +435,7 @@ export default {
   margin-right: 5px;
   width: 5%;
   color: grey;
-  font-size: 12px;
+  font-size: 15px;
 }
 #header .mid .search-form {
   /*顶部栏中间搜索框中间的框框的样式 */
@@ -397,7 +446,7 @@ export default {
   width: 10px;
   flex-grow: 1;
   background-color: transparent;
-  font-size: 12px;
+  font-size: 15px;
   border: 0px;
   outline: none;
 }
@@ -416,13 +465,12 @@ export default {
 }
 #header .mid .searchbutton span {
   /*顶部栏中间搜索框右侧按钮内部文字的样式 */
-  padding-left: 5px;
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: bold;
   color: #b88b8b;
 }
 #header .mid .searchbutton:hover {
   cursor: pointer;
-  font-weight: bolder;
 }
 
 #header .right {
@@ -435,15 +483,16 @@ export default {
   display: table;
   padding-right: 4%;
 }
-#header .right div {
+#header .right .btn {
   /*顶部栏右侧内部的样式 */
-  font-size: 12px;
+  font-size: 15px;
   text-align: center;
   display: table-cell;
   color: #b88b8b;
-  width: 50px;
-  height: 22px;
-  padding-top: 1px;
+  width: 70px;
+  height: 25px;
+  padding-top: 3px;
+  margin-top: 5px;
   border-radius: 20px;
   border: 1px solid rgb(182, 179, 179);
   margin-left: 10px;
@@ -453,6 +502,37 @@ export default {
   font-weight: bolder;
   cursor: pointer;
   
+}
+#header .right .uesrnameform{
+  font-size: 15px;
+  color: #b88b8b;
+  width: 70px;
+  height: 25px;
+  padding-top: 3px;
+  border-radius: 20px;
+  border: 1px solid rgb(182, 179, 179);
+  margin-left: 10px;
+  font-weight: bold;
+}
+#header .right .uesrnameform .usernameitem{
+  margin-left: 25%;
+}
+#header .right .outlogin{
+  opacity: 0;
+  border: 0px;
+}
+#header .right .uesrnameform:hover .outlogin{
+  font-size: 16px;
+  opacity: 1;
+  border: 0px;
+}
+.op{   /*遮罩层 */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(80, 77, 83, 0.3);
 }
 /*分页的总样式 */
 .paging {

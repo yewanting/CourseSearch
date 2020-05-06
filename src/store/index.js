@@ -21,7 +21,20 @@ const state = {
     isSort:0,//0表示综合，1表示价格从di到高，2表示价格从高到低，3表示销量从高到底
     minprice:"",//最低价
     maxprice:"", //最高价
-    discoverygoods:[] //发现页的商品
+    discoverygoods:[], //发现页的商品
+    isShowlogin:false, //是否显示登录界面
+    isShowregister:false, //是否显示注册界面
+    toastregisterinfo:"",//是否注册成功
+    toastlogininfo:"",//是否登录成功
+    isShowRegisterToast:false,//是否显示“注册成功”消息框
+    isShowLoginToast:false,//是否显示“登录成功”消息   
+    toastinfo:"",//显示收藏前是否登录
+    isShowToast:false,//是否显示提示框
+    isShowplanbianji:false,//是否显示计划的编辑框
+    planscore:[],//自评分数
+    plandate:[],//对应的日期
+    countyes:0,//有多少天完成
+    countno:0,//有多少天没完成
 }
 
 

@@ -14,7 +14,7 @@
       <p class="content">竹子课堂有10W+的课程，涵盖了编程与开发、AI/数据科学、产品与运营、</p>
       <p class="content">设计创意、电商运营、语言学习、职业考试、生活兴趣、考研、初高中等各方面的课程，应有尽有。</p>
       <div class="search-box">
-        <i class="iconfont icon-sousuo"></i>
+        <i class="iconfont icon-RectangleCopy1"></i>
         <input
           type="text"
           v-model="searchText"
@@ -124,7 +124,7 @@ export default {
   border-radius: 3px;
   box-shadow: 0px 15px 10px -15px #ccc;
 }
-.middle .icon-sousuo {
+.middle .icon-RectangleCopy1 {
   margin-left: 1.5%;
   margin-top: 1.5%;
   font-size: 20px;

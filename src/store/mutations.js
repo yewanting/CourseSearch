@@ -11,7 +11,19 @@ const PAGERSTOTAL = 'PAGERSTOTAL'
 const PAGERS = 'PAGERS'
 const SHOWPAGERS = 'SHOWPAGERS'
 const DISCOVERYGOODS = 'DISCOVERYGOODS'
-
+const ISSHOWLOGIN = 'ISSHOWLOGIN'
+const ISSHOWREGISTER = 'ISSHOWREGISTER'
+const TOASTREGISTERINFO = 'TOASTREGISTERINFO'
+const TOASTLOGININFO = 'TOASTLOGININFO'
+const ISSHOWREGISTERTOAST = 'ISSHOWREGISTERTOAST'
+const ISSHOWLOGINTOAST = 'ISSHOWLOGINTOAST'
+const TOASTINFO = 'TOASTINFO'
+const ISSHOWTOAST = 'ISSHOWTOAST'
+const ISSHOWPLANBIANJI = 'ISSHOWPLANBIANJI'
+const PLANSCORE = 'PLANSCORE'
+const PLANDATE = 'PLANDATE'
+const COUNTYES = 'COUNTYES'
+const COUNTNO = 'COUNTNO'
 
 export default {
     [SEARCHTEXT](state,res){
@@ -52,6 +64,45 @@ export default {
     },
     [DISCOVERYGOODS](state,res){
         state.discoverygoods = res
+    },
+    [ISSHOWLOGIN](state,res){
+        state.isShowlogin = res
+    },
+    [ISSHOWREGISTER](state,res){
+        state.isShowregister = res
+    },
+    [TOASTREGISTERINFO](state,res){
+        state.toastregisterinfo = res
+    },
+    [TOASTLOGININFO](state,res){
+        state.toastlogininfo = res
+    },
+    [ISSHOWREGISTERTOAST](state,res){
+        state.isShowRegisterToast = res
+    },
+    [ISSHOWLOGINTOAST](state,res){
+        state.isShowLoginToast = res
+    },
+    [TOASTINFO](state,res){
+        state.toastinfo = res
+    },
+    [ISSHOWTOAST](state,res){
+        state.isShowToast = res
+    },
+    [ISSHOWPLANBIANJI](state,res){
+        state.isShowplanbianji = res
+    },
+    [PLANSCORE](state,res){
+        state.planscore = res
+    },
+    [PLANDATE](state,res){
+        state.plandate = res
+    },
+    [COUNTYES](state,res){
+        state.countyes = res
+    },
+    [COUNTNO](state,res){
+        state.countno = res
     }
     
 }

@@ -213,7 +213,7 @@ export default {
   /*商品排序选项按钮栏左侧，单个按钮外部li的样式*/
   text-align: center;
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 15px;
   border: 1px solid rgb(206, 200, 200);
   width: 90px;
   height: 25px;
@@ -245,7 +245,7 @@ export default {
   padding-top: 4px;
   text-align: center;
   color: rgb(155, 145, 145);
-  font-size: 13px;
+  font-size: 15px;
   width: auto;
   margin-right: 30px;
 }
@@ -269,7 +269,7 @@ export default {
   /* 价格区间外部的样式不包括确认按钮*/
   float: left;
   padding-top: 12px;
-  font-size: 13px;
+  font-size: 15px;
   width: auto;
   color: #b88b8b;
 }
@@ -289,7 +289,7 @@ export default {
   padding-top: 4px;
   text-align: center;
   color: #b88b8b;
-  font-size: 12px;
+  font-size: 15px;
   border: 1px solid rgb(206, 200, 200);
   border-radius: 20px;
 }

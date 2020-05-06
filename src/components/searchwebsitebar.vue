@@ -332,7 +332,7 @@ export default {
   clear: both;
   border: 1px solid white;
   border-top-color: rgb(199, 198, 198);
-  font-size: 10px;
+  font-size: 15px;
   border-bottom-color: rgb(199, 198, 198);
   /* margin-bottom: 20px; 全选按钮与logo和checkbox距离下面的边框的距离 */
   padding-bottom: 10px; /*下面边框距离选择按钮部分的距离 */
@@ -350,7 +350,7 @@ export default {
   background-color: rgb(253, 235, 235);
   color: red;
   font-weight: bolder;
-  font-size: 15px;
+  font-size: 18px;
 }
 .bottom div:hover {
   cursor: pointer;
@@ -366,21 +366,16 @@ export default {
 .bottom li {
   /*单个logo和checkbox外部li的样式 */
   display: table-cell;
-  width: 17.5%;
+  /* width: 20%; */
 }
 
-.bottom li img {
-  /*单个logo图片的样式 */
-  float: left;
-  width: 90px;
-  height: 30px;
-}
+
 .bottom ul .text{
   text-align: right;
-  width: 90px;
+  width: 120px;
   float: left;
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 15px;
   color: #b88b8b;
   background-color: #ffffff;
   margin-right: 0;

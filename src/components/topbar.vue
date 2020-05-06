@@ -9,7 +9,7 @@
     <!-- 头部中间的大搜索框 -->
     <!-- search()函数表示记录历史记录并跳转页面 -->
     <div class="mid">
-      <i class="iconfont icon-sousuo"></i>
+      <i class="iconfont icon-RectangleCopy1"></i>
       <input type="text" v-model="searchText" class="search-form" @keyup.enter="search" placeholder="搜索您想要的课程"/>
       <div class="searchbutton" @click="search"><span>搜 索</span></div>
     </div>
@@ -18,7 +18,7 @@
     <div class="right">
       <div>登录</div>
       <div>注册</div>
-      <!-- <div><i class="iconfont icon-geren"></i></div> -->
+      <!-- <div><i class="iconfont icon-RectangleCopy3"></i></div> -->
     </div>
   </div>
 </template>
@@ -84,7 +84,7 @@ export default {
   border: 1px solid green;
 }
 
-#header .mid .icon-sousuo { /*顶部栏中间搜索框左侧的搜索图标的样式 */
+#header .mid .icon-RectangleCopy1 { /*顶部栏中间搜索框左侧的搜索图标的样式 */
   margin-left: 1%;
   float: left;
   height: 100%;

@@ -9,7 +9,7 @@
           <div class="btn checked">发现</div>
         </div>
         <div class="mid">
-          <i class="iconfont icon-sousuo"></i>
+          <i class="iconfont icon-RectangleCopy1"></i>
           <input
             v-model="searchText"
             type="text"
@@ -25,9 +25,13 @@
 
         <!-- 头部右边的登录/个人中心 -->
         <div class="right">
-          <div>登录</div>
-          <div>注册</div>
-          <!-- <div><i class="iconfont icon-geren"></i></div> -->
+          <div v-if="isShowusername" class="uesrnameform">
+               <div class="usernameitem" @click="gotocenter">{{username}}</div>
+               <div class="outlogin" @click="outoflogin">退出登录</div>
+          </div>
+             <div class = "btn" @click="login" v-if="!isShowusername">登录</div>
+             <div class = "btn" @click="register" v-if="!isShowusername">注册</div>
+          <!-- <div><i class="iconfont icon-RectangleCopy3"></i></div> -->
         </div>
       </div>
         <!--添加轮播图-->
@@ -44,6 +48,9 @@
         </div>
       </div>
 
+        <div :class="isShowlogin===true||isShowregister===true?'op':''"></div>
+        <loginpart v-show="isShowlogin"></loginpart> <!--登录-->
+        <registerpart v-show="isShowregister"></registerpart> <!--注册-->
         <!--添加首页课程-->
         <!--分为这几类:'编程与开发','考研'，'产品与运营','设计创意','电商运营','职场提升','AI/数据科学','语言学习','职业考试','生活兴趣'-->
         <!--首页课程部分-->
@@ -63,7 +70,7 @@
                           <!--商品的题目-->
                           <div class="content">{{course.coursedes}}</div>
                           <!--商品的简介-->
-                          <i class="iconfont icon-geren"></i>
+                          <i class="iconfont icon-RectangleCopy3"></i>
                           <!--个人的图标-->
                           <span>{{course.coursenumber}}</span>
                           <!--商品参加的人数-->
@@ -78,26 +85,51 @@
     </div>
 </template>
 <script>
-import swiper from '@/components/swiper.vue'   //引入轮播图组件
+// import swiper from '@/components/swiper.vue'   //引入轮播图组件
+import loginpart from '@/components/login.vue'
+import registerpart from '@/components/register.vue'
 import axiospostsearch from "@/axios/axiosgetcourse.js"  //引入axios获得的课程
 import axiosgethomegoods from '@/axios/axiosgethomegoods.js' //引入axios获得的home的课程
 export default {
     components:{
-        swiper,
-  
+        // swiper,
+        loginpart,
+        registerpart
     },
     data(){
         return{
             searchText: "", //搜索框的内容
             isFixed:false,   //一开始顶部搜索栏不固定
             coursetotallabel:['编程与开发','产品与运营','考研','设计创意','电商运营','职场提升','AI/数据科学','语言学习','职业考试','生活兴趣'],
-            errImg:'this.src="' + '../static/images/zanwutupian.png' + '"'
+            errImg:'this.src="' + '../static/images/zanwutupian.png' + '"',
+            username:"",
+            isShowusername:false,
         }
     },
+    created(){
+      this.username = sessionStorage.getItem("curusername");
+     this.isShowusername = sessionStorage.getItem("isShowusername");
+     if(this.isShowusername==null){
+       this.isShowusername=false
+       this.username=""
+     }
+     if(this.isShowusername=="false"){
+       this.isShowusername=false
+       this.username=""
+     }
+  },
     computed:{
          discoverygoods(){
            return this.$store.state.discoverygoods
-         }
+         },
+          isShowlogin(){
+             return this.$store.state.isShowlogin
+          },
+          isShowregister()
+          {
+            return this.$store.state.isShowregister;
+          }
+
     },
      /*监听滑动块移动的距离，并判断是否固定顶部栏 */
     mounted(){
@@ -180,7 +212,21 @@ export default {
         // 也可以写成这种形式
         // this.$router.push({path:'/searchResult'})
         },
-    
+      login(){
+        this.$store.commit("ISSHOWLOGIN",true)
+      },
+      register(){
+        this.$store.commit("ISSHOWREGISTER",true)
+      },
+      outoflogin(){  
+         sessionStorage.setItem("curusername", ""); 
+         sessionStorage.setItem("isShowusername",false);
+         sessionStorage.setItem("token","");  
+        this.$router.go(0)
+      },
+      gotocenter(){
+        this.$router.push({path:'./center'});
+      }
     }
 }
 </script>
@@ -194,7 +240,14 @@ export default {
     z-index: 1000;
     box-shadow: 0px 0px 10px  rgb(221, 216, 216);
 }
-
+.op{   /*遮罩层 */
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(80, 77, 83, 0.3);
+}
 #header {
   /*顶部栏的样式 */
   background-color: #ffffff;
@@ -262,7 +315,7 @@ export default {
   margin-left: 10px;
   height: 70px;
 }
-#header .mid .icon-sousuo {
+#header .mid .icon-RectangleCopy1 {
   /*顶部栏中间搜索框左侧的搜索图标的样式 */
   z-index: 100;
   color: #b88b8b;
@@ -324,15 +377,16 @@ export default {
   display: table;
   padding-right: 4%;
 }
-#header .right div {
+#header .right .btn {
   /*顶部栏右侧内部的样式 */
   font-size: 15px;
   text-align: center;
   display: table-cell;
   color: #b88b8b;
-  width: 60px;
+  width: 70px;
   height: 25px;
-  padding-top: 1px;
+  padding-top: 3px;
+  margin-top: 5px;
   border-radius: 20px;
   border: 1px solid rgb(182, 179, 179);
   margin-left: 10px;
@@ -342,6 +396,29 @@ export default {
   font-weight: bolder;
   cursor: pointer;
   
+}
+#header .right .uesrnameform{
+  font-size: 15px;
+  color: #b88b8b;
+  width: 70px;
+  height: 25px;
+  padding-top: 3px;
+  border-radius: 20px;
+  border: 1px solid rgb(182, 179, 179);
+  margin-left: 10px;
+  font-weight: bold;
+}
+#header .right .uesrnameform .usernameitem{
+  margin-left: 25%;
+}
+#header .right .outlogin{
+  opacity: 0;
+  border: 0px;
+}
+#header .right .uesrnameform:hover .outlogin{
+  font-size: 16px;
+  opacity: 1;
+  border: 0px;
 }
 .checked{
   font-weight:bold;
@@ -462,7 +539,7 @@ export default {
   padding-top: 5px;
 }
 
-.icon-geren {
+.icon-RectangleCopy3 {
   /*个人的小图标 */
   padding-left: 5px;
   font-size: 10px;
