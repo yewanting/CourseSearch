@@ -16,7 +16,7 @@
             </div>
             <div class="form">
               <div class="textform2">计划内容：</div>
-              <textarea v-model="curcontent" @change="limitcontent(curcontent)"></textarea>
+              <textarea v-model="curcontent"></textarea>
             </div>
             <div class="form">
               <div class="textform2">是否完成：</div>是
@@ -48,7 +48,7 @@
             <div class="titletext">自评分数</div>
           </th>
           <td class="title">
-            <div class="addbtn" @click="additem">添加</div>
+            <div class="addbtn" @click="bianjiitem(plan.length)">添加</div>
           </td>
         </tr>
         <tr v-for="(item,index) in plan" :key="index">
@@ -80,8 +80,8 @@
       <!--完成情况-->
       <div class="textform-1">完成情况统计:</div>
       <div>
-        <Echarts class="charts"></Echarts>
-        <Echartspie class="charts"></Echartspie>
+        <Echarts class="charts" ref="mychild1"></Echarts>
+        <Echartspie class="charts" ref="mychild2"></Echartspie>
       </div>
     </div>
   </div>
@@ -112,80 +112,24 @@ export default {
     Echartspie
   },
   created() {
-    var cmp = function(obj1, obj2) {
-      var va1 = obj1.date;
-      var va2 = obj2.date;
-      if (va1 > va2) return 1;
-      else return -1;
-    };
-      var date = new Date();//获取当前时间
-      var seperator1 = "-";
-      var year = date.getFullYear();
-      var month = date.getMonth() + 1;
-      var strDate = date.getDate();
-      if (month >= 1 && month <= 9) {
-          month = "0" + month;
-      }
-      if (strDate >= 0 && strDate <= 9) {
-          strDate = "0" + strDate;
-      }
-      var currentdate = year + seperator1 + month + seperator1 + strDate;
-    var token = sessionStorage.getItem("token");
-    var userplaninfo = {
-      token: token
-    };
-    axiosgetplan(userplaninfo, tmpplan => {
-      if (tmpplan.length == 0) {
-        this.additem();
-      } else
-      {
-          tmpplan = tmpplan.sort(cmp);
-          this.plan = tmpplan;
-      } 
-      var scoregroup = [];
-      var dategroup = [];
-      var countyes = 0;
-      var countno = 0;
-      for (var i = 0; i < this.plan.length; i++) {
-        if(this.plan[i]["date"]<=currentdate)
-        {
-            scoregroup.push(this.plan[i]["score"]);
-            dategroup.push({ date: this.plan[i]["date"], index: i });
-            if (this.plan[i]["ifSuccess"] == "是") countyes++;
-            else if (this.plan[i]["ifSuccess"] == "否") countno++;
-        }
-      
-      }
-
-      dategroup = dategroup.sort(cmp);
-      var curscoregroup = [];
-      var curdategroup = [];
-      for (var i = 0; i < dategroup.length; i++) {
-        curdategroup.push(dategroup[i]["date"]);
-        curscoregroup.push(scoregroup[dategroup[i]["index"]]);
-      }
-      this.$store.commit("PLANSCORE", curscoregroup);
-      this.$store.commit("PLANDATE", curdategroup);
-      this.$store.commit("COUNTYES", countyes);
-      this.$store.commit("COUNTNO", countno);
-    });
+    this.getplan();
   },
   methods: {
-    additem() {
+    additem(iteminfo) {
       this.plan.push({
-        date: "",
-        content: "",
-        ifSuccess: "",
-        score: "",
+        date: iteminfo["date"],
+        content: iteminfo["content"],
+        ifSuccess: iteminfo["ifSuccess"],
+        score: iteminfo["score"],
         id: ""
       });
       var token = sessionStorage.getItem("token");
       var userinsertplaninfo = {
         token: token,
-        date: "",
-        content: "",
-        ifSuccess: "",
-        score: ""
+        date: iteminfo["date"],
+        content: iteminfo["content"],
+        ifSuccess: iteminfo["ifSuccess"],
+        score: iteminfo["score"]
       };
       var _this = this;
       axiosinsertplan(userinsertplaninfo, IfinsertSuccess => {
@@ -193,7 +137,6 @@ export default {
         else console.log("插入失败");
         _this.getplan();
       });
-      
     },
     deleteitem(index) {
       var token = sessionStorage.getItem("token");
@@ -204,67 +147,124 @@ export default {
       axiosdeleteplan(deleteplaninfo, IfDelete => {
         if (IfDelete == 1) console.log("删除成功！");
         else console.log("删除失败");
+        this.getplan()
       });
-      if (index + 1 == this.plan.length) this.plan.length--;
-      else {
-        for (var i = index; i + 1 < this.plan.length; i++) {
-          this.plan[i]["date"] = this.plan[i + 1]["date"];
-          this.plan[i]["content"] = this.plan[i + 1]["content"];
-          this.plan[i]["ifSuccess"] = this.plan[i + 1]["ifSuccess"];
-          this.plan[i]["score"] = this.plan[i + 1]["score"];
-          this.plan[i]["id"] = this.plan[i + 1]["id"];
-        }
-        this.plan.length--;
-      }
-      this.$forceUpdate(); //强制更新
+      
+      
     },
     bianjiitem(index) {
       this.isShowplanbianji = true;
       this.$store.commit("ISSHOWPLANBIANJI", true);
       this.curindex = index;
+      if (this.curindex != this.plan.length) {
+        this.curdate = this.plan[index]["date"];
+        this.curcontent = this.plan[index]["content"];
+        this.curifSuccess = this.plan[index]["ifSuccess"];
+        this.curscore = this.plan[index]["score"];
+      }
     },
     close() {
       this.isShowplanbianji = false;
       this.$store.commit("ISSHOWPLANBIANJI", false);
     },
-    bianjisuccess() {
-      var token = sessionStorage.getItem("token");
-      this.plan[this.curindex]["date"] = this.curdate;
-      this.plan[this.curindex]["content"] = this.curcontent;
-      this.plan[this.curindex]["ifSuccess"] = this.curifSuccess;
-      this.plan[this.curindex]["score"] = this.curscore;
-      this.isShowplanbianji = false;
-      this.$store.commit("ISSHOWPLANBIANJI", false);
-      var userupdareplaninfo = {
-        token: token,
-        date: this.curdate,
-        content: this.curcontent,
-        ifSuccess: this.curifSuccess,
-        score: this.curscore,
-        id: this.plan[this.curindex]["id"]
-      };
-      axiosupdateplan(userupdareplaninfo, IfUpdate => {
-        if (IfUpdate == 1) console.log("编辑成功！");
-        else console.log("编辑失败");
-      });
-      this.$forceUpdate(); //强制更新
+    clear() {
+      this.curdate = "";
+      this.curcontent = "";
+      this.curifSuccess = "";
+      this.curscore = 0;
     },
+    bianjisuccess() {
+      if (this.curindex == this.plan.length) {
+        var iteminfo = {
+          date: this.curdate,
+          content: this.curcontent,
+          ifSuccess: this.curifSuccess,
+          score: this.curscore
+        };
+        this.additem(iteminfo);
+        this.isShowplanbianji = false;
+        this.$store.commit("ISSHOWPLANBIANJI", false);
+      } else {
+        var token = sessionStorage.getItem("token");
+        this.plan[this.curindex]["date"] = this.curdate;
+        this.plan[this.curindex]["content"] = this.curcontent;
+        this.plan[this.curindex]["ifSuccess"] = this.curifSuccess;
+        this.plan[this.curindex]["score"] = this.curscore;
+        this.isShowplanbianji = false;
+        this.$store.commit("ISSHOWPLANBIANJI", false);
+        var userupdareplaninfo = {
+          token: token,
+          date: this.curdate,
+          content: this.curcontent,
+          ifSuccess: this.curifSuccess,
+          score: this.curscore,
+          id: this.plan[this.curindex]["id"]
+        };
+        axiosupdateplan(userupdareplaninfo, IfUpdate => {
+          if (IfUpdate == 1) console.log("编辑成功！");
+          else console.log("编辑失败");
+          this.getplan()
+        });
+      }
+      this.clear();
+    },
+
     radiovalue(value) {
       this.curifSuccess = value;
     },
     getplan() {
+      var cmp = function(obj1, obj2) {
+        var va1 = obj1.date;
+        var va2 = obj2.date;
+        if (va1 > va2) return 1;
+        else return -1;
+      };
+      var date = new Date(); //获取当前时间
+      var seperator1 = "-";
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var strDate = date.getDate();
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+      }
+      var currentdate = year + seperator1 + month + seperator1 + strDate;
       var token = sessionStorage.getItem("token");
       var userplaninfo = {
         token: token
       };
       axiosgetplan(userplaninfo, tmpplan => {
-            var cmp = function(obj1, obj2) {
-            var va1 = obj1.date;
-            var va2 = obj2.date;
-            if (va1 > va2) return 1;
-            else return -1;
-            };
-        this.plan = tmpplan.sort(cmp);
+        tmpplan = tmpplan.sort(cmp);
+        this.plan = tmpplan;
+        var scoregroup = [];
+        var dategroup = [];
+        var countyes = 0;
+        var countno = 0;
+        for (var i = 0; i < this.plan.length; i++) {
+          if (this.plan[i]["date"] <= currentdate) {
+            scoregroup.push(this.plan[i]["score"]);
+            dategroup.push({ date: this.plan[i]["date"], index: i });
+            if (this.plan[i]["ifSuccess"] == "是") countyes++;
+            else if (this.plan[i]["ifSuccess"] == "否") countno++;
+          }
+        }
+
+        dategroup = dategroup.sort(cmp);
+        var curscoregroup = [];
+        var curdategroup = [];
+        for (var i = 0; i < dategroup.length; i++) {
+          curdategroup.push(dategroup[i]["date"]);
+          curscoregroup.push(scoregroup[dategroup[i]["index"]]);
+        }
+        this.$store.commit("PLANSCORE", curscoregroup);
+        this.$store.commit("PLANDATE", curdategroup);
+        this.$store.commit("COUNTYES", countyes);
+        this.$store.commit("COUNTNO", countno);
+
+        this.$refs.mychild1.myEcharts();
+        this.$refs.mychild2.myEcharts();
       });
     },
     limitscore(value) {
