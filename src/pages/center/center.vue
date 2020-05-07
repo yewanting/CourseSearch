@@ -46,7 +46,7 @@
     <div class="totalitem">
       <div :class="(myStar===true)?'item checked':'item'"  @click="clickMyStar">我的收藏</div>
       <div :class="(myPlan===true)?'item checked':'item'"  @click="clickMyPlan">我的计划</div>
-      <div :class="(myDiscuss===true)?'item checked':'item'"  @click="clickMyDiscuss">我的讨论</div>
+      <!-- <div :class="(myDiscuss===true)?'item checked':'item'"  @click="clickMyDiscuss">我的讨论</div> -->
     </div>
 
     <div>
@@ -58,9 +58,9 @@
         <plan></plan>
       </div>
         
-      <div v-show="myDiscuss" class="myDiscussfrom">
+      <!-- <div v-show="myDiscuss" class="myDiscussfrom">
         <discuss></discuss>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -70,14 +70,14 @@ import loginpart from "@/components/login.vue";
 import registerpart from "@/components/register.vue";
 import star from "@/components/star.vue";
 import plan from "@/components/plan.vue";
-import discuss from "@/components/discuss.vue";
+// import discuss from "@/components/discuss.vue";
 export default {
   components: {
     loginpart,
     registerpart,
     star,
     plan,
-    discuss
+    // discuss
   },
   data() {
     return {
@@ -85,7 +85,7 @@ export default {
       isFixed: false, //一开始顶部搜索栏不固定
       myStar: true,
       myPlan: false,
-      myDiscuss: false
+      // myDiscuss: false
     };
   },
   created() {
@@ -173,18 +173,18 @@ export default {
     clickMyStar(){
         this.myStar = true
         this.myPlan = false
-        this.myDiscuss = false
+        // this.myDiscuss = false
     },
     clickMyPlan(){
         this.myStar = false
         this.myPlan = true
-        this.myDiscuss = false
+        // this.myDiscuss = false
     },
-    clickMyDiscuss(){
-        this.myStar = false
-        this.myPlan = false
-        this.myDiscuss = true
-    }
+    // clickMyDiscuss(){
+    //     this.myStar = false
+    //     this.myPlan = false
+    //     this.myDiscuss = true
+    // }
   }
 };
 </script>

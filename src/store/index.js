@@ -10,7 +10,7 @@ const state = {
     searchText:"",//搜索框的内容
     goodsdata:[],//课程产品
     HistoryTags:[],//历史搜索记录
-    searchwebsite:['中国大学MOOC','网易云课堂','CSDN','计算机慕课网','学而思网校','沪江网校'],//选了哪些商城网站
+    searchwebsite:['中国大学MOOC','网易云课堂','CSDN','计算机慕课网','沪江网校'],//选了哪些商城网站
     isShowpager:false,//是否展示分页
     curpage:1, //当前的页码
     pagesize:20,//一页显示的数量

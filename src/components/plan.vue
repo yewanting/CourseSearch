@@ -34,6 +34,14 @@
             </div>
           </div>
         </div>
+        <div v-show="isShowtoast" class="toastform">
+          <div>
+            <i class="iconfont icon-RectangleCopy" @click="close"></i>
+            <div class="textform-3">确定删除吗？</div>
+            <div class="btn2 " @click="confirmdelete">确定</div>
+            <div class="btn2" @click="close">取消</div>
+          </div>
+        </div>
         <tr>
           <th class="title">
             <div class="titletext">截止时间</div>
@@ -99,6 +107,7 @@ export default {
     return {
       plan: [],
       isShowplanbianji: false,
+      isShowtoast:false,
       curdate: "",
       curcontent: "",
       curifSuccess: "",
@@ -139,18 +148,21 @@ export default {
       });
     },
     deleteitem(index) {
+      this.isShowtoast = true;
+      this.curindex = index;  
+    },
+    confirmdelete(){
+      this.isShowtoast = false;
       var token = sessionStorage.getItem("token");
       var deleteplaninfo = {
         token: token,
-        id: this.plan[index]["id"]
+        id: this.plan[this.curindex]["id"]
       };
       axiosdeleteplan(deleteplaninfo, IfDelete => {
         if (IfDelete == 1) console.log("删除成功！");
         else console.log("删除失败");
         this.getplan()
       });
-      
-      
     },
     bianjiitem(index) {
       this.isShowplanbianji = true;
@@ -165,6 +177,7 @@ export default {
     },
     close() {
       this.isShowplanbianji = false;
+      this.isShowtoast = false;
       this.$store.commit("ISSHOWPLANBIANJI", false);
     },
     clear() {
@@ -338,6 +351,15 @@ export default {
   width: 42vw;
   height: 40vh;
 }
+.toastform{
+  left: 35%;
+  z-index: 100;
+  position: absolute;
+  background-color: #ffffff;
+  box-shadow: 0px 10px 30px gray;
+  width: 20vw;
+  height: 30vh;
+}
 .bianjiform .textform {
   margin: 20px;
   float: left;
@@ -368,6 +390,14 @@ export default {
   font-size: 18px;
   font-weight: bold;
 }
+.textform-3{
+  clear: both;
+  margin-left: 34%;
+  color: #b88b8b;
+  font-weight: bold;
+  font-size: 20px;
+}
+
 textarea {
   width: 80%;
 }
@@ -379,7 +409,7 @@ textarea {
   height: 30px;
   border: 1px solid #b88b8b;
 }
-.btn:hover {
+.btn:hover,.btn2:hover {
   cursor: pointer;
   background-color: #b88b8b;
   color: #ffffff;
@@ -393,4 +423,15 @@ textarea {
   margin-left: 13%;
   float: left;
 }
+.btn2{
+  float: left;
+  margin-left: 20%;
+  color: #b88b8b;
+  text-align: center;
+  width: 80px;
+  height: 25px;
+  border: 1px solid #b88b8b;
+  margin-top:20%;
+}
+
 </style>

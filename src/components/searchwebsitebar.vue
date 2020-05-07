@@ -85,7 +85,6 @@
         </li>
         <li>
           <div class="text">学而思网校</div>
-          <!-- <img :src="websitelogo[4].logo"> -->
           <div id="love4"> 
           <input @click="num4"
             type="checkbox"

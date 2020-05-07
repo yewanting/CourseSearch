@@ -22,6 +22,13 @@
                          <i class="iconfont icon-password"></i><input type="password" v-model="userinfo.password" placeholder="请输入密码" class="none">
                     </div> 
                  </div>
+                  <div  class="totalitem" >
+                     <div class = "text">确认密码：</div>
+                     <div class="item">
+                         <i class="iconfont icon-password"></i><input type="password" v-model="userinfo.confirmpassword" placeholder="请输入密码" @change="confirm()" class="none">
+                    </div> 
+                     <div class="infoform">{{confirminfo}}</div>
+                 </div>
            </div>
            <div class="btn">
                <div class="btnregister" @click="register"  @keyup.enter="register">注册</div>
@@ -38,8 +45,11 @@ export default {
         return{
             userinfo:{
                 username:"",
-                password:""
+                password:"",
+                confirmpassword:"",
+                
             },
+            confirminfo:"",
         }
     },
     computed:{
@@ -59,23 +69,42 @@ export default {
             this.$store.commit("ISSHOWREGISTER",false)
         },
         register(){ //注册用户
-            axiosregisteruserinfo(this.userinfo,IfInsert=>{ 
-                if(IfInsert=='1')
-                {
-                    this.$store.commit('TOASTREGISTERINFO','注册成功！')
-                }else
-                if(IfInsert=='-1')
-                {
-                    this.$store.commit('TOASTREGISTERINFO','用户名已存在，请使用其他用户名！')                   
-                }
+            if(this.userinfo.confirmpassword!=this.userinfo.password)
+            {
+                this.confirminfo = "两次密码不一致!"
                 
-                this.$store.commit('ISSHOWREGISTERTOAST',true);           
-            })
-            var _this = this
-            setTimeout(function(){   //显示1.5秒后消失
-            _this.$store.commit('ISSHOWREGISTERTOAST',false);
-            },1500)
+            }else
+            {
+                this.confirminfo = ""
+                    axiosregisteruserinfo(this.userinfo,IfInsert=>{ 
+                    if(IfInsert=='1')
+                    {
+                        this.$store.commit('TOASTREGISTERINFO','注册成功！')
+                    }else
+                    if(IfInsert=='-1')
+                    {
+                        this.$store.commit('TOASTREGISTERINFO','用户名已存在，请使用其他用户名！')                   
+                    }
+                    
+                    this.$store.commit('ISSHOWREGISTERTOAST',true);           
+                })
+                var _this = this
+                setTimeout(function(){   //显示1.5秒后消失
+                _this.$store.commit('ISSHOWREGISTERTOAST',false);
+                },1500)
+            }
+  
 
+        },
+        confirm(){
+            if(this.userinfo.confirmpassword!=this.userinfo.password)
+            {
+                this.confirminfo = "两次密码不一致!"
+
+            }else
+            {
+                this.confirminfo = ""
+            }
         }
     }
 }
@@ -146,7 +175,7 @@ export default {
 }
 .text{
     float: left;
-    width: 15%;
+    width: 18%;
 }
 .item{
     float: left;
@@ -185,5 +214,9 @@ export default {
     cursor: pointer;
     background-color: #ebafaf;
     color: white;
+}
+.infoform{
+    margin-left: 18%;
+    color: red;
 }
 </style>
