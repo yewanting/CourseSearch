@@ -10,27 +10,7 @@
         全选
       </div>
       <ul>
-        <!-- <li v-for="(content,index) in websitelogo" :key="index">
-          <img :src="content.logo" /> -->
-          <!--搜索页面的网页的logo-->
-          <!-- <input
-            type="checkbox"
-            class="checkform"
-            :value="content.value"
-            v-model="checkname"
-            @change="changvalue"
-          /> -->
-          <!-- <div id="love"> 
-          <input
-            type="checkbox"
-            class="checkform"
-            :value="content.value"
-            v-model="checkname"
-            @change="changvalue"
-          />
-          </div> -->
-          <!--搜索页面的网页的logo旁边的checkbox-->
-        <!-- </li> -->
+
         <li>
           <div class="text">中国大学MOOC</div>
           <!-- <img :src="websitelogo[0].logo"> -->

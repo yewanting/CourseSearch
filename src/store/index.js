@@ -35,6 +35,10 @@ const state = {
     plandate:[],//对应的日期
     countyes:0,//有多少天完成
     countno:0,//有多少天没完成
+    isShowdiscusschoice:false,
+    isShowEmpty:false,
+    luntan_name:"",
+    totalcontent:"",
 }
 
 

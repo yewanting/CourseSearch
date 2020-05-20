@@ -35,7 +35,7 @@
     </div>
 
 
-    <div :class="isShowlogin===true||isShowregister===true||isShowplanbianji===true?'op':''"></div>
+    <div :class="isShowlogin===true||isShowregister===true||isShowplanbianji===true||isShowdiscusschoice===true?'op':''"></div>
     <loginpart v-show="isShowlogin"></loginpart>
     <!--登录-->
     <registerpart v-show="isShowregister"></registerpart>
@@ -46,7 +46,7 @@
     <div class="totalitem">
       <div :class="(myStar===true)?'item checked':'item'"  @click="clickMyStar">我的收藏</div>
       <div :class="(myPlan===true)?'item checked':'item'"  @click="clickMyPlan">我的计划</div>
-      <!-- <div :class="(myDiscuss===true)?'item checked':'item'"  @click="clickMyDiscuss">我的讨论</div> -->
+      <div :class="(myDiscuss===true)?'item checked':'item'"  @click="clickMyDiscuss">我的讨论</div>
     </div>
 
     <div>
@@ -58,9 +58,9 @@
         <plan></plan>
       </div>
         
-      <!-- <div v-show="myDiscuss" class="myDiscussfrom">
+      <div v-show="myDiscuss" class="myDiscussfrom">
         <discuss></discuss>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -70,14 +70,16 @@ import loginpart from "@/components/login.vue";
 import registerpart from "@/components/register.vue";
 import star from "@/components/star.vue";
 import plan from "@/components/plan.vue";
-// import discuss from "@/components/discuss.vue";
+import discuss from "@/components/discuss.vue";
+import axiosgetuserluntanname from '@/axios/axiosgetuserluntanname.js'
+import axiosgetluntancontent from "@/axios/axiosgetluntancontent.js"
 export default {
   components: {
     loginpart,
     registerpart,
     star,
     plan,
-    // discuss
+    discuss
   },
   data() {
     return {
@@ -85,9 +87,10 @@ export default {
       isFixed: false, //一开始顶部搜索栏不固定
       myStar: true,
       myPlan: false,
-      // myDiscuss: false
+      myDiscuss: false,
     };
   },
+
   created() {
     this.username = sessionStorage.getItem("curusername");
     this.isShowusername = sessionStorage.getItem("isShowusername");
@@ -109,6 +112,12 @@ export default {
     },
     isShowplanbianji(){
       return this.$store.state.isShowplanbianji;
+    },
+    isShowdiscusschoice(){
+      return this.$store.state.isShowdiscusschoice;
+    },
+    luntanname(){
+      return this.$store.state.luntan_name
     }
   },
   /*监听滑动块移动的距离，并判断是否固定顶部栏 */
@@ -173,18 +182,73 @@ export default {
     clickMyStar(){
         this.myStar = true
         this.myPlan = false
-        // this.myDiscuss = false
+        this.myDiscuss = false
+
     },
     clickMyPlan(){
         this.myStar = false
         this.myPlan = true
-        // this.myDiscuss = false
+        this.myDiscuss = false
+      
     },
-    // clickMyDiscuss(){
-    //     this.myStar = false
-    //     this.myPlan = false
-    //     this.myDiscuss = true
-    // }
+    clickMyDiscuss(){
+        this.myStar = false
+        this.myPlan = false
+        var token = sessionStorage.getItem("token")
+        var info = {
+            "token":token
+        }
+        axiosgetuserluntanname(info,IfGetName=>{
+            if(IfGetName.length==0)
+            {
+                this.$store.commit("ISSHOWEMPTY",true)
+            }else{
+              this.$store.commit("LUNTANNAME",IfGetName)
+                 var curtime = this.gettime()
+                 var info2 = {
+                    "token":token,
+                    "curtime":curtime,
+                    "luntanname":this.luntanname[0]["luntanname"]
+                }
+                axiosgetluntancontent(info2,IfGetContent=>{
+                        this.$store.commit("TOTALCONTENT",IfGetContent)
+                        // console.log(IfGetContent)
+                    })
+            }
+        })
+     
+            
+        this.myDiscuss = true
+
+    },
+        gettime(){
+                var date = new Date(); //获取当前时间
+                var seperator1 = "-";
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var strDate = date.getDate();
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (strDate >= 1 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+
+                var hour = date.getHours();//获取系统时间
+                var minute = date.getMinutes(); //分
+                var second = date.getSeconds();//秒
+                 if (hour >= 1 && hour <= 9) {
+                    hour = "0" + hour;
+                }
+                 if ( minute >= 1 &&  minute <= 9) {
+                     minute = "0" +  minute;
+                }
+                 if ( second >= 1 &&  second <= 9) {
+                    second = "0" + second;
+                }
+                var curtime = year + seperator1 + month + seperator1 + strDate+" "+hour+":"+minute+":"+second;
+                return curtime;
+        }
   }
 };
 </script>

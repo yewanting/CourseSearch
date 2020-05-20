@@ -257,10 +257,16 @@ export default {
         var countno = 0;
         for (var i = 0; i < this.plan.length; i++) {
           if (this.plan[i]["date"] <= currentdate) {
+            if(this.plan[i]["score"]=="")
+            this.plan[i]["score"] = 0;
+
             scoregroup.push(this.plan[i]["score"]);
             dategroup.push({ date: this.plan[i]["date"], index: i });
             if (this.plan[i]["ifSuccess"] == "是") countyes++;
-            else if (this.plan[i]["ifSuccess"] == "否") countno++;
+            else  {
+              this.plan[i]["ifSuccess"] = "否"
+              countno++;
+            }
           }
         }
 

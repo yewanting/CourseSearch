@@ -24,6 +24,10 @@ const PLANSCORE = 'PLANSCORE'
 const PLANDATE = 'PLANDATE'
 const COUNTYES = 'COUNTYES'
 const COUNTNO = 'COUNTNO'
+const ISSHOWDISCUSSCHOICE = 'ISSHOWDISCUSSCHOICE'
+const ISSHOWEMPTY = 'ISSHOWEMPTY'
+const LUNTANNAME = 'LUNTANNAME'
+const TOTALCONTENT = 'TOTALCONTENT'
 
 export default {
     [SEARCHTEXT](state,res){
@@ -103,6 +107,18 @@ export default {
     },
     [COUNTNO](state,res){
         state.countno = res
+    },
+    [ISSHOWDISCUSSCHOICE](state,res){
+        state.isShowdiscusschoice = res
+    },
+    [ISSHOWEMPTY](state,res){
+        state.isShowEmpty = res
+    },
+    [LUNTANNAME](state,res){
+        state.luntan_name = res
+    },
+    [TOTALCONTENT](state,res){
+        state.totalcontent = res
     }
     
 }

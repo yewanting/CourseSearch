@@ -5,7 +5,7 @@ var axios = require('axios')
  function axiospostuserstar(data,callback){   
     axios.post("http://localhost:8081/api/insertuserstar",data)
     .then(function(response){
-        console.log(response.data)
+        // console.log(response.data)
         callback(response.data);
     })
     .catch(function(err){

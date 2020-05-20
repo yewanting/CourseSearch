@@ -2,10 +2,10 @@ var axios = require('axios')
 
 //传给后台数据
 
- function axioscanceluserstar(data,callback){   
-    axios.post("http://localhost:8081/api/deleteuserstar",data)
+ function axiosselectuserstar(data,callback){   
+    axios.post("http://localhost:8081/api/getuserluntanname",data)
     .then(function(response){
-        // console.log(response.data)
+        
         callback(response.data);
     })
     .catch(function(err){
@@ -15,6 +15,6 @@ var axios = require('axios')
 
 
 }
-module.exports = axioscanceluserstar
+module.exports = axiosselectuserstar
 
 
