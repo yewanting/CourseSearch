@@ -39,6 +39,14 @@ const state = {
     isShowEmpty:false,
     luntan_name:"",
     totalcontent:"",
+    curluntanpage:1,
+    luntanpagers:"",
+    isShowluntanpager:false,
+    showluntanpage:[],
+    luntanpagerstotal:1,
+    luntanpagers:"",
+    luntanchoice:[],
+    curluntanindex:0
 }
 
 

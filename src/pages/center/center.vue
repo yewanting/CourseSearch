@@ -73,6 +73,7 @@ import plan from "@/components/plan.vue";
 import discuss from "@/components/discuss.vue";
 import axiosgetuserluntanname from '@/axios/axiosgetuserluntanname.js'
 import axiosgetluntancontent from "@/axios/axiosgetluntancontent.js"
+import axiosgetluntanpagerscount from '@/axios/axiosgetluntanpagerscount.js'
 export default {
   components: {
     loginpart,
@@ -198,6 +199,7 @@ export default {
         var info = {
             "token":token
         }
+        this.$store.commit("CURLUNTANINDEX",0)
         axiosgetuserluntanname(info,IfGetName=>{
             if(IfGetName.length==0)
             {
@@ -208,12 +210,35 @@ export default {
                  var info2 = {
                     "token":token,
                     "curtime":curtime,
-                    "luntanname":this.luntanname[0]["luntanname"]
+                    "luntanname":this.luntanname[0],
+                    "curluntanpage":1
                 }
                 axiosgetluntancontent(info2,IfGetContent=>{
                         this.$store.commit("TOTALCONTENT",IfGetContent)
                         // console.log(IfGetContent)
                     })
+                axiosgetluntanpagerscount(info2,IfGetcount=>{
+                    // console.log(IfGetcount[0]["count(*)"])
+                    this.$store.commit("LUNTANPAGERSTOTAL",IfGetcount[0]["count(*)"])
+                    this.$store.commit("LUNTANPAGERS",Math.ceil(IfGetcount[0]["count(*)"]/5))
+                     var tmppagers = Math.ceil(IfGetcount[0]["count(*)"]/5)
+                    var li = []
+                    var tmpcurpage = 1
+                       for (
+                    var i = Math.min(Math.max(1, tmpcurpage - 2), tmppagers);
+                    i <=
+                    Math.min(
+                    tmpcurpage + (tmpcurpage < 3 ? 5 - tmpcurpage : 2),
+                    tmppagers
+                    );
+                    i++
+                ) {
+                    li.push(i);
+                }
+                if (li.length == 0) li.push(1);
+                this.$store.commit("SHOWLUNTANPAGE",li)
+               })
+                
             }
         })
      

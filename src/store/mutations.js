@@ -28,6 +28,13 @@ const ISSHOWDISCUSSCHOICE = 'ISSHOWDISCUSSCHOICE'
 const ISSHOWEMPTY = 'ISSHOWEMPTY'
 const LUNTANNAME = 'LUNTANNAME'
 const TOTALCONTENT = 'TOTALCONTENT'
+const CURLUNTANPAGE = 'CURLUNTANPAGE'
+const LUNTANPAGERS = 'LUNTANPAGERS'
+const ISSHOWLUNTANPAGER = 'ISSHOWLUNTANPAGER'
+const SHOWLUNTANPAGE = 'SHOWLUNTANPAGE'
+const CHOICELUNTAN = 'CHOICELUNTAN'
+const LUNTANPAGERSTOTAL = 'LUNTANPAGERSTOTAL'
+const CURLUNTANINDEX = 'CURLUNTANINDEX'
 
 export default {
     [SEARCHTEXT](state,res){
@@ -119,6 +126,26 @@ export default {
     },
     [TOTALCONTENT](state,res){
         state.totalcontent = res
+    },
+    [CURLUNTANPAGE](state,res){
+        state.curluntanpage = res
+    },
+    [LUNTANPAGERS](state,res){
+        state.luntanpagers = res
+    },
+    [ISSHOWLUNTANPAGER](state,res){
+        state.isShowluntanpager = res
+    },
+    [SHOWLUNTANPAGE](state,res){
+        state.showluntanpage = res
+    },
+    [CHOICELUNTAN](state,res){
+        state.luntanchoice = res
+    },
+    [LUNTANPAGERSTOTAL](state,res){
+        state.luntanpagerstotal = res
+    },
+    [CURLUNTANINDEX](state,res){
+        state.curluntanindex = res
     }
-    
 }
