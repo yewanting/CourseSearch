@@ -255,6 +255,7 @@ export default {
       }
     },
         gopage(tcurpage) {
+          console.log(this.$store.state.searchwebsite)
          axiosgetcount(
         {
           searchtext: this.$store.state.searchText,

@@ -488,7 +488,7 @@ export default {
 }
 .courseform:hover{
   cursor: pointer;
-  box-shadow:2px 2px 40px 5px gray; ;
+  box-shadow:2px 2px 40px 5px gray; 
 }
 .courseform a {
   text-decoration: none;
