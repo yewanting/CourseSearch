@@ -1,151 +1,125 @@
 <template>
-  <div class="totalbg">
-    <div class="top">
-      <img src="../../../static/images/zhuzilogo.png" class="logo" />
-      <div class="btnhome">首页</div>
-      <div class="btndiscovery" @click="gotodiscovery">发现</div>
-      <!-- <div class="toprightbtn">
-         <div class="btn"><div>登录</div></div>
-         <div class="btn"><div>注册</div></div>
-      </div> -->
-    </div>
-    <div class="middle">
-      <div class="title">竹子课堂，陪你一起开拓学习视野</div>
-      <p class="content">竹子课堂有10W+的课程，涵盖了编程与开发、AI/数据科学、产品与运营、</p>
-      <p class="content">设计创意、电商运营、语言学习、职业考试、生活兴趣、考研、初高中等各方面的课程，应有尽有。</p>
-      <div class="search-box">
-        <i class="iconfont icon-RectangleCopy1"></i>
-        <input
-          type="text"
+  <v-app id="app">
+    <v-row>
+      <v-col cols="1"></v-col>
+      <v-col cols="2">
+        <v-img src="../../../public/images/zhuzilogo.png"></v-img>
+      </v-col>
+      <v-col cols="1">
+        <v-btn text color="#b88b8b" class="btnhome">首页</v-btn>
+      </v-col>
+      <v-col cols="1">
+        <v-btn text color="#b88b8b" class="btndiscovery" @click="gotodiscovery"
+          >发现</v-btn
+        >
+      </v-col>
+    </v-row>
+    <v-row align="center" justify="center">
+      <v-col class="text-center" cols="12">
+        <h1 class="big_title_form">竹子课堂，陪你一起开拓学习视野</h1>
+        <p class="text_form caption">
+          竹子课堂有10W+的课程，涵盖了编程与开发、AI/数据科学、产品与运营、
+        </p>
+        <p class="text_form caption">
+          设计创意、电商运营、语言学习、职业考试、生活兴趣、考研、初高中等各方面的课程，应有尽有。
+        </p>
+      </v-col>
+      <v-col cols="8">
+        <v-text-field
           v-model="searchText"
-          class="search-form"
+          label="Solo"
+          placeholder="搜索您想要的课程"
+          prepend-inner-icon="mdi-magnify"
           @keyup.enter="search"
-          placeholder="搜索你想要的课程"
-        />
-        <div class="searchbutton" @click="search">
-          <span>搜 索</span>
-        </div>
-      </div>
-    </div>
-  </div>
+          solo
+        >
+        </v-text-field>
+      </v-col>
+    </v-row>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+  </v-app>
 </template>
-
 
 
 <script>
 export default {
-  data(){
-      return{
-          searchText:""
-      }
+  data() {
+    return {
+      searchText: "",
+      value: 0,
+      colors: [
+        "indigo",
+        "warning",
+        "pink darken-2",
+        "red lighten-1",
+        "deep-purple accent-4",
+      ],
+      slides: ["竹子课堂", "竹子课堂", "竹子课堂", "竹子课堂", "竹子课堂"],
+    };
   },
+  beforeDestroy() {
+    if (typeof window === "undefined") return;
+
+    window.removeEventListener("resize", this.onResize, { passive: true });
+  },
+  mounted() {
+    this.onResize();
+    window.addEventListener("resize", this.onResize, { passive: true });
+  },
+  computed: {},
   methods: {
     search() {
       if (this.searchText != "") {
-          console.log(this.searchText)
         sessionStorage.setItem("text", this.searchText);
         this.$router.push("/searchResult");
       }
     },
-    gotodiscovery(){
-        this.$router.push("/discovery");
-    }
-  }
+    gotodiscovery() {
+      this.$router.push("/discovery");
+    },
+    onResize() {
+      if (
+        this.$vuetify.breakpoint.name == "xs" ||
+        this.$vuetify.breakpoint.name == "sm"
+      ) {
+        this.$router.push("/app_home");
+      }
+    
+    },
+  },
 };
 </script>
 
-
-
 <style scoped>
-.totalbg {
-
-  width: 99vw;
-  height: 98vh;
+#app {
+  width: 100vw;
+  height: 100vh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-image: url("../../../static/images/bg2.jpg");
+  background-image: url("../../../public/images/bg2.jpg");
 }
-.top {
-  margin-top: 0;
-  height: 15%;
+.text_form {
+  color: #b88b8b;
+  /* font-size: 1rem; */
 }
-.top .logo {
-  float: left;
-  width: 8%;
-  height: 100%;
-  margin-left: 9%;
-  margin-top: 1%;
+.big_title_form {
+  color: #b88b8b;
+  /* font-size: 2em; */
 }
-
-.top .btnhome{
-    margin-top: 4%;
-    margin-left: 1%;
-    float: left;
-    color: #b88b8b;
-    padding-bottom: 3px;
-    border-bottom: 1px solid #b88b8b;
+.btnhome {
+  border-bottom: 1px solid #b88b8b;
 }
-.top .btndiscovery{
-    margin-top: 4%;
-    margin-left: 1%;
-    float: left;
-    padding-bottom: 3px;
-    color: #b88b8b;
-}
-.top .btnhome:hover,.top .btndiscovery:hover{
-    cursor: pointer;
-    border-bottom: 1px solid #b88b8b;
-} 
-
-.middle {
-  margin-top: 5%;
-  width: 100%;
-  height: 40%;
-  text-align: center;
-
-}
-.middle .title{
-    font-family:'Times New Roman', Times, serif;
-    color: #b88b8b;
-    font-size: 35px;
-    margin-bottom: 10px;
-}
-.middle .content{
-    color: #b88b8b;
-    font-size: 12px;
-}
-.middle .search-box {
-  position: absolute;
-  left: 25%;
-  top:  45%;
-  background-color: #ffffff;
-  width: 50%;
-  height: 5%;
-  border-radius: 3px;
-  box-shadow: 0px 15px 10px -15px #ccc;
-}
-.middle .icon-RectangleCopy1 {
-  margin-left: 1.5%;
-  margin-top: 1.5%;
-  font-size: 20px;
-  float: left;
-}
-.middle .search-form {
-  margin-left: 1%;
-  margin-top: 1.7%;
-  width: 80%;
-  outline: none;
-  background: transparent;
-  border: 0;
-  float: left;
-}
-.middle .searchbutton {
-  margin-right: 1%;
-  margin-top:1.5%;
-  float: right;
-  color: #775656;
-}
-.middle .searchbutton:hover {
+.btndiscovery:hover {
   cursor: pointer;
+  border-bottom: 1px solid #b88b8b;
+}
+.top_bar {
+  background-image: linear-gradient(#e66465, #9198e5);
+  height: 100px;
 }
 </style>

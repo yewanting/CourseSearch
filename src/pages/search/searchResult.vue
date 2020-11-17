@@ -1,152 +1,261 @@
 <template>
-  <div class="divform">
-    <!--搜索页头部三大块:页面顶部搜索框，网站选择和排序选择-->
-    <div class="wholetopbar">
-      <!-- 添加页面顶部栏 -->
-      <div :class="isFixed===true?'fixed':''" id="header">
-        <!-- 头部左边的logo -->
-        <div class="left">
-          <!-- <img  class = "logo" src="../../../static/images/logo.jpg" alt="logo" /> -->
-          <img  class = "zhuzilogo" src="../../../static/images/zhuzilogo.png" alt="logotext" />
-          <div  class="btn" @click="gotohome">首页</div>
-          <div class="btn" @click="gotodiscovery">发现</div>
-        </div>
-
-
-         <!-- <div class="suosouimgform">
-            <img src="../../../static/images/sousoubg.png">
-          </div> -->
-        <!-- 头部中间的大搜索框 -->
-        <!-- search()函数表示记录历史记录并跳转页面 -->
-        <div class="mid">
-          <i class="iconfont icon-RectangleCopy1"></i>
-          <input
-            v-model="searchText"
-            type="text"
-            class="search-form"
-            @keyup.enter="search"
+  <v-app id="inspire">
+    <v-app-bar app :height="app_bar_height" color="#ffffff" hide-on-scroll>
+      <v-row align="center" class="mid_form d-none d-md-flex">
+        <v-col cols="1">
+          <v-img src="../../../public/images/zhuzilogo.png" contain></v-img>
+        </v-col>
+        <v-col cols="1">
+          <v-btn color="#b88b8b" text class="btn" @click="gotohome">首页</v-btn>
+        </v-col>
+        <v-col cols="1">
+          <v-btn color="#b88b8b" text class="btn" @click="gotodiscovery"
+            >发现</v-btn
+          >
+        </v-col>
+        <v-col cols="7">
+          <v-text-field
+            label="Solo"
             placeholder="搜索您想要的课程"
-          />
-          <div class="searchbutton" @click="search()">
-            <span>搜 索</span>
-          </div>
+            prepend-inner-icon="mdi-magnify"
+            hide-details
+            solo
+            @keyup.enter="search"
+            v-model="searchText"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col cols="1">
+          <v-btn color="#ffffff" class="btn">登录</v-btn>
+        </v-col>
+        <v-col cols="1">
+          <v-btn color="#ffffff" class="btn">注册</v-btn>
+        </v-col>
+        <v-col cols="12">
+          <v-divider></v-divider>
+        </v-col>
+        <v-col>
+          <v-btn class="btn" color="#ffffff" @click="selectAll">全选</v-btn>
+        </v-col>
+        <v-col v-for="(name, index) in website" :key="index">
+          <v-checkbox
+            :label="name"
+            hide-details
+            v-model="checked[index]"
+            @change="changevalue"
+            color="#b88b8b"
+            :value="name"
+            name="website"
+          ></v-checkbox>
+        </v-col>
+        <v-col cols="12">
+          <v-divider></v-divider>
+        </v-col>
+        <v-col cols="1">
+          <v-menu offset-y prepend-inner-icon="mdi-magnify">
+            <template v-slot:activator="{ attrs, on }">
+              <v-btn v-bind="attrs" v-on="on" outlined class="btn" @click="free"
+                >免费课程</v-btn
+              >
+            </template>
+            <v-list>
+              <v-list-item link>
+                <v-list-item-title @click="sortselect(0)"
+                  >综合</v-list-item-title
+                >
+              </v-list-item>
+              <v-list-item link>
+                <v-list-item-title @click="sortselect(3)"
+                  >销量从高到低</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
 
-        </div>
+        <v-col>
+          <v-menu offset-y>
+            <template v-slot:activator="{ attrs, on }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                outlined
+                class="btn"
+                @click="nofree"
+                >付费课程</v-btn
+              >
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(title, index) in unfree_choice"
+                :key="index"
+                link
+              >
+                <v-list-item-title
+                  style="color: #b88b8b"
+                  @click="sortselect(index)"
+                  >{{ title }}</v-list-item-title
+                >
+              </v-list-item>
+            </v-list>
+          </v-menu>
 
-        <!-- 头部右边的登录/个人中心 -->
-        <div class="right">
-          <div v-if="isShowusername" class="uesrnameform">
-               <div class="usernameitem" @click="gotocenter">{{username}}</div>
-               <div class="outlogin" @click="outoflogin">退出登录</div>
-          </div>
-             <div class = "btn" @click="login" v-if="!isShowusername">登录</div>
-             <div class = "btn" @click="register" v-if="!isShowusername">注册</div>
-         
+        </v-col>
 
-          <!-- <div><i class="iconfont icon-RectangleCopy3"></i></div> -->
-        </div>
-      </div>
-      <div :class="isShowlogin===true||isShowregister===true?'op':''"></div>
-      <loginpart v-show="isShowlogin"></loginpart><!--登录-->
-      <registerpart v-show="isShowregister"></registerpart> <!--注册-->
-      <!--添加网站选项-->
-      <searchwebsitebar></searchwebsitebar>
-      <!--商品排序选项按钮栏-->
-      <searchsortbar></searchsortbar>
-    </div>
-     
-    <!--添加商品-->
-      <Goods></Goods>
+        <span class="text">价格区间</span>
+        <v-col cols="1">
+          <v-text-field
+            dense
+            label="最低价"
+            hide-details
+            outlined
+            color="#b88b8b"
+            v-model="minprice"
+          >
+          </v-text-field>
+        </v-col>
+        <span class="text"> ————</span>
+        <v-col cols="1">
+          <v-text-field
+            dense
+            label="最高价"
+            hide-details
+            outlined
+            color="#b88b8b"
+            v-model="maxprice"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col cols="1">
+          <v-btn color="#ffffff" class="btn" @click="segmentcofirm">确定</v-btn>
+        </v-col>
+      </v-row>
+      <v-row align="center" justify="center" class="mid_form d-flex d-md-none">
+        <v-col cols="11">
+          <v-text-field
+            label="Solo"
+            placeholder="搜索您想要的课程"
+            prepend-inner-icon="mdi-magnify"
+            hide-details
+            solo-inverted
+            v-model="searchText"
+            background-color="transparent"
+          >
+          </v-text-field>
+        </v-col>
+      </v-row>
+    </v-app-bar>
 
-
-    <!--添加分页-->
-    <div v-show="isShowpager">
-      <ul class="paging">
-        <li class="paging-item">共 {{pagerstotal}} 条</li>
-        <!--上一页-->
-        <li
-          class="paging-item paging-item-prev"
-          :class="{'paging-item-disabled': curpage===1}"
-          @click="prev"
-        >上一页</li>
-
-        <!--首页-->
-        <li
-          class="paging-item paging-item-prev"
-          :class="{'paging-item-disabled': curpage===1}"
-          @click="first"
-        >首页</li>
-
-        <li
-          class="paging-item"
-          :class="{'paging-item-cur': curpage === pager}"
-          v-for="(pager,index) in showparge"
+    <v-btn
+      fixed
+      bottom
+      right
+      color="pink"
+      fab
+      v-show="show_gotop == true"
+      @click="gotop()"
+    >
+      <v-icon color="#ffffff"> mdi-chevron-up</v-icon>
+    </v-btn>
+    <v-main class="ma-15">
+      <v-row>
+        <v-col
+          v-for="(goodsitem, index) in goods"
           :key="index"
-          @click="go(pager)"
-        >{{pager}}</li>
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"   
+        >
+          <!-- <v-lazy transition="fade-transition"> -->
+          <v-card class="card_form" :height="card_height" >
+            <a :href="goodsitem.coursevediohref" target="_blank">
+              <v-img
+                class="img align-end"
+                :src="goodsitem.courseimghref"
+                :height="img_height"
+                lazy-src="../../../public/images/zanwutupian.png"
+              >
+                <v-card-title class=" white--text d-flex d-lg-none" :class="title_class" dense  >{{ goodsitem.coursetitle }}</v-card-title>
+              </v-img>
+              <v-card-title class="text--primary d-none d-lg-flex" :class="title_class" dense >
+                {{ goodsitem.coursetitle }}</v-card-title
+              >
 
-        <!--末页-->
-        <li
-          class="paging-item paging-item-last"
-          :class="{'paging-item-disabled': curpage===pagers}"
-          @click="last"
-        >末页</li>
-
-        <!--下一页-->
-        <li
-          class="paging-item paging-item-next"
-          :class="{'paging-item-disabled': curpage===pagers}"
-          @click="next"
-        >下一页</li>
-      </ul>
-    </div>
-
-    <!--添加返回顶部-->
-    <gotop></gotop>
-  </div>
+              <v-card-text style="color: grey" :class="p_class" class="d-none d-lg-flex">
+                <div :class="p_class">{{ goodsitem.coursedes }}</div>
+              </v-card-text>
+            </a>
+            <v-card-actions >
+              <v-row justify="start" dense>
+                <v-col>
+                  <i class="iconfont icon-RectangleCopy3"></i>
+                <!--个人的图标-->
+                <span :class="p_class">{{ goodsitem.coursenumber }}</span>
+                <!--商品参加的人数-->
+                </v-col>
+                <v-col cols="12" class="price" :class="p_class">￥{{ goodsitem.courseprice }}</v-col>
+                <!--商品的价格-->
+              </v-row>
+            </v-card-actions>
+          </v-card>
+          <!-- </v-lazy> -->
+        </v-col>
+      </v-row>
+      <v-row justify="center" align="center">
+        <!--下面的length原本应该是length = pagers的，但是因为js没有强制类型转换
+        length要求类型是number，而pagers是String，为了防止报错，就用了个数学函数 -->
+        <v-pagination
+          v-model="page"
+          :length="Math.min(pagers, pagers)"
+          :total-visible="Math.min(7, pagers)"
+          color="#b88b8b"
+          @next="next"
+          @previous="prev"
+          @input="go(page)"
+        ></v-pagination
+      ></v-row>
+    </v-main>
+  </v-app>
 </template>
 
+
 <script>
-import searchwebsitebar from "@/components/searchwebsitebar.vue";
-import searchsortbar from "@/components/searchsortbar.vue";
-import Goods from "@/components/Goods.vue";
-import gotop from "@/components/gotop.vue";
-import loginpart from '@/components/login.vue'
-import registerpart from '@/components/register.vue'
 import axiospostsearch from "@/axios/axiosgetcourse.js"; //引入axios获得的课程
 import axiosgetcount from "@/axios/axiosgetcount.js"; //引入axios获得的课程总数
 export default {
   data() {
     return {
-      isFixed: false, //是否固定头部搜索栏
+      show_gotop: false,
+      website: [
+        "中国大学MOOC",
+        "网易云课堂",
+        "CSDN",
+        "计算机慕课网",
+        "学而思网校",
+        "沪江网校",
+      ],
       searchText: "", //搜索框的内容
-      username:"",
-      isShowusername:false,
+      checked: [
+        "中国大学MOOC",
+        "网易云课堂",
+        "CSDN",
+        "计算机慕课网",
+        "学而思网校",
+        "沪江网校",
+      ],
+      unfree_choice: ["综合", "价格从低到高", "价格从高到低", "销量从高到低"],
+      free_choice: ["综合", "销量从高到低"],
+      page: 1,
+      minprice: "", //最低价
+      maxprice: "", //最高价
+      cur: 0,
     };
   },
-  components: {
-    searchwebsitebar, //搜索页面checkbox网站选择那里的组件
-    searchsortbar, // 搜索页面排序按钮那里
-    Goods, //商品列表
-    gotop, //返回顶部
-    loginpart, //登录页面
-    registerpart,//注册页面
-  },
-  created(){
-     this.username = sessionStorage.getItem("curusername");
-     this.isShowusername = sessionStorage.getItem("isShowusername");
-     if(this.isShowusername==null){
-       this.isShowusername=false
-       this.username=""
-     }
-     if(this.isShowusername=="false"){
-       this.isShowusername=false
-       this.username=""
-     }
-  },
+
   computed: {
-    isShowpager(){
-        return this.$store.state.isShowpager
+    isShowpager() {
+      return this.$store.state.isShowpager;
     },
     curpage() {
       //当前的页码
@@ -156,91 +265,164 @@ export default {
       //一页的数量
       return this.$store.state.pagesize;
     },
-    showparge() {
-      //中间显示的部分页码
-      return this.$store.state.showparge;
-    },
-    pagerstotal() {
+    pagestotal() {
       //总共的数量
-      return this.$store.state.pagerstotal;
+      return this.$store.state.pagestotal;
     },
     pagers() {
       //总共的页数
-      return this.$store.state.pagers;
+      return this.$store.state.pagers + 0;
     },
-     isShowlogin(){
-         return this.$store.state.isShowlogin
-      },
-       isShowregister()
-      {
-        return this.$store.state.isShowregister;
-      },
-  },
-  mounted() {
-    /*监听滑动块移动的距离，并判断是否固定顶部栏 */
-    window.addEventListener("scroll", this.handleScroll);
+    goods() {
+      return this.$store.state.goodsdata;
+    },
+    app_bar_height(){
+      let size = 0;
+      switch (this.$vuetify.breakpoint.name) {
+          case 'xs': size = 100 
+          break
+          case 'sm': size = 100
+          break
+          case 'md': size = 300
+          break
+          case 'lg': size = 300
+          break
+          case 'xl': size = 300
+        }
+        return size
+    },
+    card_height(){
+       let size = 0;
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': size = 200 
+          break
+          case 'sm': size = 250
+          break
+          case 'md': size = 250
+          break
+          case 'lg': size = 350
+          break
+          case 'xl': size = 350
+        }
+        return size
+    },
+    img_height(){
+      let size = 0;
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': size = 100
+          break
+          case 'sm': size = 150
+          break
+          case 'md': size = 180
+          break
+          case 'lg': size = 180
+          break
+          case 'xl': size = 180
+        }
+        return size
+    },
+    title_class(){
+       let title_form = 0;
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': title_form = "text-sm-h6"
+          break
+          case 'sm': title_form = "text-sm-h6"
+          break
+          case 'md': title_form = "text-md-h6"
+          break
+          case 'lg': title_form = "text-lg-h6"
+          break
+          case 'xl': title_form = "text-xl-h6"
+        }
+        return title_form
+    },
+    p_class(){
+      let p_form = 0;
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': p_form = "text-xs-caption"
+          break
+          case 'sm': p_form = "text-sm-caption"
+          break
+          case 'md': p_form = "text-md-caption"
+          break
+          case 'lg': p_form = "text-lg-caption"
+          break
+          case 'xl': p_form = "text-xl-caption"
+        }
+        return p_form
+    }
 
+  },
+
+  mounted() {
+    window.addEventListener("scroll", this.handle);
     /*获取到首页搜索框的值 */
     this.searchText = sessionStorage.getItem("text", "");
     this.search();
   },
-  /*移除监听滑动块 */
   destroyed() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.handle);
   },
+  components: {},
   methods: {
-    handleScroll() {
-      //scrollTop表示垂直滚动的距离
-      let scrollTop =
-        window.pageYOffset || //pageYOffset 设置或返回当前页面相对于窗口显示区左上角的 Y 位置
-        document.documentElement.scrollTop || //要获取当前页面的滚动条纵坐标位置,documentElement 对应的是 html 标签
-        document.body.scrollTop; //body 对应的是 body 标签。
-      //所有主流浏览器都支持 pageXOffset 和 pageYOffset 属性。
-      //IE 8 及 更早 IE 版本不支持该属性,但可以使用 document.documentElement.scrollLeft
-      //和 document.documentElement.scrollTop 属性
-      // const offsetTop = document.querySelector('#head').offsetTop
-      // querySelector() 方法返回文档中匹配指定 CSS 选择器的一个元素。
-
-      if (scrollTop >= 100) {
-        this.isFixed = true; //滑动超过100固定
+    gotop() {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    },
+    handle() {
+      var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+      if (oTop > 100) {
+        // 当滚动条滑动距离大于100，则显示
+        this.show_gotop = true;
       } else {
-        this.isFixed = false; //滑动没超出100不固定
+        //否则不显示
+        this.show_gotop = false;
       }
     },
-    gotohome(){
-        this.$router.push("/home");
+    gotohome() {
+      this.$router.push("/home");
     },
-    gotodiscovery(){
+    gotodiscovery() {
       this.$router.push("/discovery");
     },
-    //search()函数表示记录历史记录并跳转页面
+    selectAll() {
+      let flag = 0;
+      for (let i = 0; i < this.checked.length; i++) {
+        if (this.checked[i] == null) {
+          flag = 1;
+        }
+      }
+      if (flag) {
+        this.checked = [
+          "中国大学MOOC",
+          "网易云课堂",
+          "CSDN",
+          "计算机慕课网",
+          "学而思网校",
+          "沪江网校",
+        ];
+      } else {
+        this.checked = [null, null, null, null, null, null];
+      }
+
+      this.changevalue();
+    },
     search() {
       this.$store.commit("ISFREE", -1);
       this.$store.commit("SEARCHTEXT", this.searchText);
-      if (this.$store.state.HistoryTags.indexOf(this.searchText.trim()) == -1) {
-        this.$store.state.HistoryTags.unshift(this.searchText.trim());
-      }
-      // 更新数据
       if (this.searchText !== "") {
         sessionStorage.setItem("text", this.searchText);
-        //搜索的时候，页面变成第一页      
-      }
+        //搜索的时候，页面变成第一页
+
         this.$store.commit("CURPAGE", 1);
         this.gopage(1);
-      },
+      }
+    },
     prev() {
       if (this.$store.state.curpage > 1) {
         this.go(this.$store.state.curpage - 1);
-      }
-    },
-    first() {
-      if (this.$store.state.curpage !== 1) {
-        this.go(1);
-      }
-    },
-    last() {
-      if (this.$store.state.curpage != this.$store.state.pagers) {
-        this.go(this.$store.state.pagers);
       }
     },
     next() {
@@ -254,9 +436,8 @@ export default {
         this.gopage(this.$store.state.curpage);
       }
     },
-        gopage(tcurpage) {
-          console.log(this.$store.state.searchwebsite)
-         axiosgetcount(
+    gopage(tcurpage) {
+      axiosgetcount(
         {
           searchtext: this.$store.state.searchText,
           curpage: tcurpage,
@@ -266,9 +447,8 @@ export default {
           isSort: this.$store.state.isSort,
           minprice: this.$store.state.minprice,
           maxprice: this.$store.state.maxprice,
-          
         },
-        goodscount => {
+        (goodscount) => {
           this.$store.state.goodscount = goodscount["COUNT(*)"];
           //获取课程总数
           var tmppagerstotal = goodscount["COUNT(*)"];
@@ -310,258 +490,154 @@ export default {
           minprice: this.$store.state.minprice,
           maxprice: this.$store.state.maxprice,
         },
-        goodsdata => {
+        (goodsdata) => {
           //将字符串转为JSON对象
           this.$store.state.goodsdata = JSON.parse(goodsdata);
-          this.$store.commit('ISSHOWPAGER',true);
+          this.$store.commit("ISSHOWPAGER", true);
+        }
+      );
+      this.gotop();
+    },
+    changevalue() {
+      this.checkname = [];
+      for (let i = 0; i < this.checked.length; i++) {
+        if (this.checked[i] != null) {
+          this.checkname.push(this.checked[i]);
+        }
+      }
+      // console.log(this.checkname)
+      this.$store.commit("SEARCHWEBSITE", this.checkname);
+      this.axiosgetpage1();
+    },
+    free() {
+      this.$store.commit("ISFREE", 0);
+      this.axiosgetpage1(); //将分页置于第一页，并且获取分页第一页的课程和课程总的数量
+    },
+    nofree() {
+      this.$store.commit("ISFREE", 1);
+      this.axiosgetpage1(); //将分页置于第一页，并且获取分页第一页的课程和课程总的数量
+    },
+    sortselect(index) {
+      this.cur = index;
+      //0表示综合，1表示价格从di到高，2表示价格从高到低，3表示销量从高到底
+      this.$store.commit("ISSORT", index);
+      this.axiosgetpage1(); //将分页置于第一页，并且获取分页第一页的课程和课程总的数量
+    },
+    segmentcofirm() {
+      this.$store.commit("MINPRICE", this.minprice);
+      this.$store.commit("MAXPRICE", this.maxprice);
+      this.axiosgetpage1(); //将分页置于第一页，并且获取分页第一页的课程和课程总的数量
+    },
+    ifvalue() {
+      this.$store.commit("MINPRICE", this.minprice); //把最小值传给vuex的mutations进一步修改state
+      this.$store.commit("MAXPRICE", this.maxprice); //把最大值传给vuex的mutations进一步修改state
+    },
+    axiosgetpage1() {
+      this.$store.commit("CURPAGE", 1);
+
+      //获取选中商品的参数
+      axiospostsearch(
+        {
+          searchtext: this.$store.state.searchText,
+          curpage: 1,
+          pagesize: this.$store.state.pagesize,
+          searchwebsite: this.$store.state.searchwebsite,
+          isFree: this.$store.state.isFree,
+          isSort: this.$store.state.isSort,
+          minprice: this.$store.state.minprice,
+          maxprice: this.$store.state.maxprice,
+        },
+        (goodsdata) => {
+          //将字符串转为JSON对象
+          this.$store.state.goodsdata = JSON.parse(goodsdata);
+        }
+      );
+      axiosgetcount(
+        {
+          searchtext: this.$store.state.searchText,
+          curpage: 1,
+          pagesize: this.$store.state.pagesize,
+          searchwebsite: this.$store.state.searchwebsite,
+          isFree: this.$store.state.isFree,
+          isSort: this.$store.state.isSort,
+          minprice: this.$store.state.minprice,
+          maxprice: this.$store.state.maxprice,
+        },
+        (goodscount) => {
+          this.$store.state.goodscount = goodscount["COUNT(*)"];
+          //获取课程总数
+          var tmppagerstotal = goodscount["COUNT(*)"];
+          var tmppagersize = this.$store.state.pagesize;
+          //获取页数
+          var tmppagers = Math.ceil(tmppagerstotal / tmppagersize);
+
+          this.$store.commit("PAGERSTOTAL", tmppagerstotal);
+          this.$store.commit("PAGERS", tmppagers);
+
+          //分页
+          var li = [];
+          var tmpcurpage = this.$store.state.curpage;
+          for (
+            var i = Math.max(1, tmpcurpage - 2);
+            i <=
+            Math.min(
+              tmpcurpage + (tmpcurpage < 3 ? 5 - tmpcurpage : 2),
+              tmppagers
+            );
+            i++
+          ) {
+            li.push(i);
+          }
+          if (li.length === 0) {
+            li.push(1);
+          }
+          this.$store.commit("SHOWPAGERS", li);
         }
       );
     },
-      login(){
-        this.$store.commit("ISSHOWLOGIN",true)
-      },
-      register(){
-        this.$store.commit("ISSHOWREGISTER",true)
-      },
-      outoflogin(){  
-         sessionStorage.setItem("curusername", ""); 
-         sessionStorage.setItem("isShowusername",false);
-         sessionStorage.setItem("token","");  
-        this.$router.go(0)
-      },
-      gotocenter(){
-        this.$router.push({path:'./center'});
-      }
-  }
+  },
 };
 </script>
 
+
 <style scoped>
-/*整个搜索页面的样式 */
-.divform {
-  width: 100%;
-  margin: 0;
-  padding: 0;
+.mid_form {
+  background-image: url("../../../public/images/sousuobg.png");
+  background-size: 70% 90%;
+  background-position-x: right;
 }
-
-/*搜索页面头部三大块的总样式：头部搜索栏、网站选择和价格排序 */
-.wholetopbar {
-  margin: 0;
-  padding-bottom: 5px;
-  box-shadow: 0px 15px 10px -15px #ccc; /*让整个topbar部分下面生成阴影部分 */
+.btn {
+  color: #b88b8b;
+  font-size: 1rem;
 }
-/*固定头部搜索栏的样式 */
-.divform .wholetopbar .fixed {
-  position: fixed;
-  top: 0;
-  z-index: 1000;
-   box-shadow: 0px 15px 10px -15px #ccc; 
-}
-#header {
-  /*顶部栏的样式 */
-  background-color: #ffffff;
-  height: 90px;
-  width: 100%;
-  box-sizing: border-box;
-  background-size: 50% 100%;
-  background-repeat: no-repeat;
-  background-position:75%;
-  background-image: url("../../../static/images/sousuobg.png");
-}
-#header div {
-  /*顶部栏里每个小块的样式，总共有三个小块，左、中、右 */
-  float: left;
-  box-sizing: border-box;
-}
-#header .left {
-  /*顶部栏左侧详细的样式 */
-  float: left;
-  height: 100%;
-  width: 22%;
-  box-sizing: border-box;
-  padding-left: 20px;
-  /* padding-top: 10px; */
-}
-
-
-#header .left .zhuzilogo{
-  float: left;
-  margin-left: 1%;
-  height:100%;
-  width: 30%;
-}
-#header .left .btn{
-   width: 12%;
-   margin-top: 8%;
-   margin-left: 5%;
-   font-size: 100%;
-   color: #b88b8b;
-}
-#header .left .btn:hover{
-  cursor: pointer;
-  padding-bottom: 5px;
+.btn:hover {
   border-bottom: 1px solid #b88b8b;
 }
-.wholetopbar #header .mid {
-  /*顶部栏中间搜索框的样式 */
-
-  display: flex;
-  float: left;
-  height: 30px;
-  border-radius: 5px;
-  width: 50%;
-  box-sizing: border-box;
-  margin-top: 30px;
-  z-index: 100;
-  border: 1px solid #bba8a8;
-
-
+.checked {
+  border-bottom: 1px solid #b88b8b;
 }
-.suosouimgform img{
-  float: left;
-  margin-left: 10px;
-  /* position: absolute; */
-  height: 70px;
+.active_btn {
+  background-color: #b88b8b;
+  color: #ffffff;
 }
-#header .mid .icon-RectangleCopy1 {
-  /*顶部栏中间搜索框左侧的搜索图标的样式 */
-  z-index: 100;
+a {
+  text-decoration: none;
+}
+.text {
   color: #b88b8b;
-  margin-left: 1%;
-  float: left;
+}
+.card_form {
   height: 100%;
-  padding-left: 1%;
-  padding-top: 7px;
-  box-sizing: border-box;
-  margin-right: 5px;
-  width: 5%;
-  color: grey;
-  font-size: 15px;
+  overflow: hidden;
 }
-#header .mid .search-form {
-  /*顶部栏中间搜索框中间的框框的样式 */
-  z-index: 100;
-  padding-top: 1px;
-  float: left;
-  height: 100%;
-  width: 10px;
-  flex-grow: 1;
-  background-color: transparent;
-  font-size: 15px;
-  border: 0px;
-  outline: none;
+.card_form:hover {
+  box-shadow: 2px 2px 40px 5px gray;
 }
-#header .mid .searchbutton {
-  /*顶部栏中间搜索框右侧按钮的样式 */
-  z-index: 100;
-  float: left;
-  width: 45px;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  color: #6b4242;
-  /* padding-bottom: 3px; */
-  padding-left: 5px;
+.img:hover {
+  transition: 0.6s;
+  transform: scale(1.2);
 }
-#header .mid .searchbutton span {
-  /*顶部栏中间搜索框右侧按钮内部文字的样式 */
-  font-size: 15px;
-  font-weight: bold;
-  color: #b88b8b;
-}
-#header .mid .searchbutton:hover {
-  cursor: pointer;
-}
-
-#header .right {
-  /*顶部栏右侧样式 */
-  float: right;
-  margin-top: 35px;
-  box-sizing: border-box;
-  list-style: none;
-  padding: 0;
-  display: table;
-  padding-right: 4%;
-}
-#header .right .btn {
-  /*顶部栏右侧内部的样式 */
-  font-size: 15px;
-  text-align: center;
-  display: table-cell;
-  color: #b88b8b;
-  width: 70px;
-  height: 25px;
-  padding-top: 3px;
-  margin-top: 5px;
-  border-radius: 20px;
-  border: 1px solid rgb(182, 179, 179);
-  margin-left: 10px;
-}
-
-#header .right div:hover {
-  font-weight: bolder;
-  cursor: pointer;
-  
-}
-#header .right .uesrnameform{
-  font-size: 15px;
-  color: #b88b8b;
-  width: 70px;
-  height: 25px;
-  padding-top: 3px;
-  border-radius: 20px;
-  border: 1px solid rgb(182, 179, 179);
-  margin-left: 10px;
-  font-weight: bold;
-}
-#header .right .uesrnameform .usernameitem{
-  margin-left: 25%;
-}
-#header .right .outlogin{
-  opacity: 0;
-  border: 0px;
-}
-#header .right .uesrnameform:hover .outlogin{
-  font-size: 16px;
-  opacity: 1;
-  border: 0px;
-}
-.op{   /*遮罩层 */
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgba(80, 77, 83, 0.3);
-}
-/*分页的总样式 */
-.paging {
-  margin-top: 20px;
-  clear: both;
-  list-style: none;
-}
-/* 分页的各个小块的样式 */
-.paging .paging-item {
-  float: left;
-  margin: 1%;
-  color: rgb(90, 87, 87);
-  font-size: 15px;
-}
-.paging .paging-item:hover:first-child {
-  cursor: default;
-}
-/* 鼠标移到分页小块时的样式 */
-.paging .paging-item:hover {
-  color: rgb(27, 142, 146);
-  cursor: pointer;
-}
-/* 禁用时的样式 */
-.paging .paging-item-disabled:hover {
-  cursor: not-allowed;
-}
-/* 当前分页选中的的样式 */
-.paging .paging-item-cur {
-  color: rgb(27, 142, 146);
+.price{
+   color: orangered;
 }
 </style>

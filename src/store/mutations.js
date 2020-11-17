@@ -35,6 +35,14 @@ const SHOWLUNTANPAGE = 'SHOWLUNTANPAGE'
 const CHOICELUNTAN = 'CHOICELUNTAN'
 const LUNTANPAGERSTOTAL = 'LUNTANPAGERSTOTAL'
 const CURLUNTANINDEX = 'CURLUNTANINDEX'
+const APPDISCOGOODS = 'APPDISCOGOODS'
+const COURSETOTALLABEL ='COURSETOTALLABEL'
+const CLASSIFYSELECTED = 'CLASSIFYSELECTED'
+const FREECOURSE = 'FREECOURSE'
+const HOTCOURSE = 'HOTCOURSE'
+const GOODCOURSE = 'GOODCOURSE'
+const SEARCHGOODS = 'SEARCHGOODS'
+
 
 export default {
     [SEARCHTEXT](state,res){
@@ -147,5 +155,26 @@ export default {
     },
     [CURLUNTANINDEX](state,res){
         state.curluntanindex = res
+    },
+    [APPDISCOGOODS](state,res){
+        state.app_disco_goods = res
+    },
+    [COURSETOTALLABEL](state,res){
+        state.coursetotal_label = res
+    },
+    [CLASSIFYSELECTED](state,res){
+        state.classify_selected = res
+    },
+    [FREECOURSE](state,res){
+        state.free_course = res
+    },
+    [HOTCOURSE](state,res){
+        state.hot_course = res
+    },
+    [GOODCOURSE](state,res){
+        state.good_course = res
+    },
+    [SEARCHGOODS](state,res){
+        state.search_goods = res
     }
 }

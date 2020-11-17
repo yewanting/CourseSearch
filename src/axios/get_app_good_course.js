@@ -2,8 +2,8 @@ var axios = require('axios')
 
 //传给后台数据
 
- function axiosgethomegoods(data,callback){   
-    axios.post("http://localhost:8081/api/gethomegoods",data)
+ function axiosgetappgoodgoods(data,callback){   
+    axios.post("http://localhost:8081/api/get_app_good_goods",data)
     .then(function(response){
         var homegoods = response.data;
         callback(homegoods);
@@ -15,5 +15,5 @@ var axios = require('axios')
 
 
 }
-module.exports = axiosgethomegoods
+module.exports = axiosgetappgoodgoods
 

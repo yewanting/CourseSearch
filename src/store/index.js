@@ -44,9 +44,15 @@ const state = {
     isShowluntanpager:false,
     showluntanpage:[],
     luntanpagerstotal:1,
-    luntanpagers:"",
     luntanchoice:[],
-    curluntanindex:0
+    curluntanindex:0,
+    app_disco_goods:[],
+    coursetotal_label:"编程与开发",
+    classify_selected:0,
+    free_course:[],
+    hot_course:[],
+    good_course:[],
+    search_goods:[]
 }
 
 
