@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-app-bar :height="app_bar_height" app color="#ffffff">
+    <v-app-bar :height="app_bar_height" app color="#ffffff" hide-on-scroll>
       <v-row align="center" class="mid_form d-none d-md-flex">
         <v-col cols="1">
           <v-img src="../../../public/images/zhuzilogo.png"></v-img>
@@ -22,12 +22,21 @@
           >
           </v-text-field>
         </v-col>
-        <v-col cols="1">
-          <v-btn color="#ffffff" class="btn">登录</v-btn>
+        <v-col cols="1" v-if="!isShowusername">
+          <login></login>
         </v-col>
-        <v-col cols="1">
-          <v-btn color="#ffffff" class="btn">注册</v-btn>
+        <v-col cols="1" v-if="!isShowusername">
+          <register></register>
         </v-col>
+        <v-col cols="1" v-if="isShowusername"
+          ><v-btn
+            class="btn"
+            @click="gotocenter"
+            >{{ username }}</v-btn
+          >
+        </v-col>
+        <v-col cols="1" @click="outoflogin"> <v-btn text class="btn">退出登录</v-btn></v-col>
+
         <v-col cols="12">
           <!--添加导航栏-->
           <div class="Navbar">
@@ -87,7 +96,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-main class="ma-15" >
+    <v-main class="ma-15">
       <v-row v-for="(courselabel, index) in coursetotallabel" :key="index">
         <v-col cols="11" :id="courselabel">
           <h1>{{ courselabel }}</h1>
@@ -101,8 +110,7 @@
           sm="6"
           xs="1"
         >
-          <!-- <v-lazy transition="fade-transition"> -->
-          <v-card class="card_form" :height="card_height" >
+          <v-card class="card_form" :height="card_height">
             <a :href="course.coursevediohref" target="_blank">
               <v-img
                 class="img"
@@ -110,7 +118,7 @@
                 height="200"
                 lazy-src="../../../public/images/zanwutupian.png"
               ></v-img>
-              <v-card-title class="text--primary" >
+              <v-card-title class="text--primary">
                 {{ course.coursetitle }}</v-card-title
               >
               <v-card-text style="color: grey">
@@ -119,7 +127,6 @@
               <v-card-text> </v-card-text>
             </a>
           </v-card>
-          <!-- </v-lazy> -->
         </v-col>
       </v-row>
     </v-main>
@@ -141,6 +148,8 @@
 <script>
 // import axiospostsearch from "@/axios/axiosgetcourse.js"; //引入axios获得的课程
 import axiosgethomegoods from "@/axios/axiosgethomegoods.js"; //引入axios获得的home的课程
+import register from "@/components/register.vue";
+import login from "@/components/login.vue";
 export default {
   data() {
     return {
@@ -161,13 +170,31 @@ export default {
       show_gotop: false,
       errImg: "this.src='" + "../../../public/images/zanwutupian.png" + "'",
       searchText: "", //搜索框的内容
-      value:0
+      value: 0,
+      username: "",
+      isShowusername:false,
     };
+  },
+  created() {
+    this.username = sessionStorage.getItem("curusername");
+    this.isShowusername = sessionStorage.getItem("isShowusername");
+    if (this.isShowusername == null) {
+      this.isShowusername = false;
+      this.username = "";
+    }
+    if (this.isShowusername == "false") {
+      this.isShowusername = false;
+      this.username = "";
+    }
   },
   watch: {
     group() {
       this.drawer = false;
     },
+  },
+  components: {
+    register,
+    login,
   },
   computed: {
     discoverygoods() {
@@ -260,63 +287,77 @@ export default {
 
       return classify_discoverygoods;
     },
-    app_bar_height(){
+    app_bar_height() {
       let size = 0;
       switch (this.$vuetify.breakpoint.name) {
-          case 'xs': size = 100 
-          break
-          case 'sm': size = 100
-          break
-          case 'md': size = 300
-          break
-          case 'lg': size = 300
-          break
-          case 'xl': size = 300
-        }
-        return size
+        case "xs":
+          size = 100;
+          break;
+        case "sm":
+          size = 100;
+          break;
+        case "md":
+          size = 300;
+          break;
+        case "lg":
+          size = 300;
+          break;
+        case "xl":
+          size = 300;
+      }
+      return size;
     },
-    card_height(){
-       let size = 0;
-        switch (this.$vuetify.breakpoint.name) {
-          case 'xs': size = 350 
-          break
-          case 'sm': size = 350
-          break
-          case 'md': size = 350
-          break
-          case 'lg': size = 350
-          break
-          case 'xl': size = 350
-        }
-        return size
-    },
-    img_height(){
+    card_height() {
       let size = 0;
-        switch (this.$vuetify.breakpoint.name) {
-          case 'xs': size = 180
-          break
-          case 'sm': size = 180
-          break
-          case 'md': size = 180
-          break
-          case 'lg': size = 180
-          break
-          case 'xl': size = 180
-        }
-        return size
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          size = 350;
+          break;
+        case "sm":
+          size = 350;
+          break;
+        case "md":
+          size = 350;
+          break;
+        case "lg":
+          size = 350;
+          break;
+        case "xl":
+          size = 350;
+      }
+      return size;
     },
-
+    img_height() {
+      let size = 0;
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          size = 180;
+          break;
+        case "sm":
+          size = 180;
+          break;
+        case "md":
+          size = 180;
+          break;
+        case "lg":
+          size = 180;
+          break;
+        case "xl":
+          size = 180;
+      }
+      return size;
+    },
   },
   mounted() {
     this.gethomgoods(this.coursetotallabel);
     window.addEventListener("scroll", this.handle);
-     if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
 
     window.removeEventListener("resize", this.onResize, { passive: true });
   },
   destroyed() {
     window.removeEventListener("scroll", this.handle);
-      this.onResize();
+    this.onResize();
     window.addEventListener("resize", this.onResize, { passive: true });
   },
   methods: {
@@ -351,6 +392,9 @@ export default {
         );
       }
     },
+    validate() {
+      this.$refs.form.validate();
+    },
     handle() {
       var oTop = document.body.scrollTop || document.documentElement.scrollTop;
       if (oTop > 100) {
@@ -376,14 +420,24 @@ export default {
     gotohome() {
       this.$router.push("/home");
     },
-      onResize() {
+    onResize() {
       if (
         this.$vuetify.breakpoint.name == "xs" ||
         this.$vuetify.breakpoint.name == "sm"
       ) {
         this.$router.push("/app_discovery");
       }
-    
+    },
+    outoflogin() {
+      sessionStorage.setItem("curusername", "");
+      sessionStorage.setItem("isShowusername", false);
+      sessionStorage.setItem("token", "");
+      this.isShowusername = false;
+      this.username = "";
+      this.$router.go(0);
+    },
+    gotocenter() {
+      this.$router.push({ path: "./center" });
     },
   },
 };
@@ -454,5 +508,8 @@ a {
 .img:hover {
   transition: 0.6s;
   transform: scale(1.2);
+}
+.text_form {
+  color: #b88b8b;
 }
 </style>

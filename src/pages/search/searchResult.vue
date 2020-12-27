@@ -25,12 +25,19 @@
           >
           </v-text-field>
         </v-col>
-        <v-col cols="1">
-          <v-btn color="#ffffff" class="btn">登录</v-btn>
+        <v-col cols="1" v-if="!isShowusername">
+          <login></login>
         </v-col>
-        <v-col cols="1">
-          <v-btn color="#ffffff" class="btn">注册</v-btn>
+        <v-col cols="1" v-if="!isShowusername">
+          <register></register>
         </v-col>
+        <v-col cols="1" v-if="isShowusername"
+          ><v-btn class="btn" @click="gotocenter">{{ username }}</v-btn>
+        </v-col>
+        <v-col cols="1" @click="outoflogin" v-if="isShowusername">
+          <v-btn text class="btn">退出登录</v-btn></v-col
+        >
+
         <v-col cols="12">
           <v-divider></v-divider>
         </v-col>
@@ -99,7 +106,6 @@
               </v-list-item>
             </v-list>
           </v-menu>
-
         </v-col>
 
         <span class="text">价格区间</span>
@@ -158,50 +164,7 @@
       <v-icon color="#ffffff"> mdi-chevron-up</v-icon>
     </v-btn>
     <v-main class="ma-15">
-      <v-row>
-        <v-col
-          v-for="(goodsitem, index) in goods"
-          :key="index"
-          xl="3"
-          lg="3"
-          md="4"
-          sm="6"   
-        >
-          <!-- <v-lazy transition="fade-transition"> -->
-          <v-card class="card_form" :height="card_height" >
-            <a :href="goodsitem.coursevediohref" target="_blank">
-              <v-img
-                class="img align-end"
-                :src="goodsitem.courseimghref"
-                :height="img_height"
-                lazy-src="../../../public/images/zanwutupian.png"
-              >
-                <v-card-title class=" white--text d-flex d-lg-none" :class="title_class" dense  >{{ goodsitem.coursetitle }}</v-card-title>
-              </v-img>
-              <v-card-title class="text--primary d-none d-lg-flex" :class="title_class" dense >
-                {{ goodsitem.coursetitle }}</v-card-title
-              >
-
-              <v-card-text style="color: grey" :class="p_class" class="d-none d-lg-flex">
-                <div :class="p_class">{{ goodsitem.coursedes }}</div>
-              </v-card-text>
-            </a>
-            <v-card-actions >
-              <v-row justify="start" dense>
-                <v-col>
-                  <i class="iconfont icon-RectangleCopy3"></i>
-                <!--个人的图标-->
-                <span :class="p_class">{{ goodsitem.coursenumber }}</span>
-                <!--商品参加的人数-->
-                </v-col>
-                <v-col cols="12" class="price" :class="p_class">￥{{ goodsitem.courseprice }}</v-col>
-                <!--商品的价格-->
-              </v-row>
-            </v-card-actions>
-          </v-card>
-          <!-- </v-lazy> -->
-        </v-col>
-      </v-row>
+      <Goods></Goods>
       <v-row justify="center" align="center">
         <!--下面的length原本应该是length = pagers的，但是因为js没有强制类型转换
         length要求类型是number，而pagers是String，为了防止报错，就用了个数学函数 -->
@@ -223,6 +186,10 @@
 <script>
 import axiospostsearch from "@/axios/axiosgetcourse.js"; //引入axios获得的课程
 import axiosgetcount from "@/axios/axiosgetcount.js"; //引入axios获得的课程总数
+import register from "@/components/register.vue";
+import login from "@/components/login.vue";
+import Goods from "@/components/Goods.vue";
+
 export default {
   data() {
     return {
@@ -250,9 +217,24 @@ export default {
       minprice: "", //最低价
       maxprice: "", //最高价
       cur: 0,
+      username: "",
+      isShowusername: false,
+     
     };
   },
 
+  created() {
+    this.username = sessionStorage.getItem("curusername");
+    this.isShowusername = sessionStorage.getItem("isShowusername");
+    if (this.isShowusername == null) {
+      this.isShowusername = false;
+      this.username = "";
+    }
+    if (this.isShowusername == "false") {
+      this.isShowusername = false;
+      this.username = "";
+    }
+  },
   computed: {
     isShowpager() {
       return this.$store.state.isShowpager;
@@ -273,87 +255,35 @@ export default {
       //总共的页数
       return this.$store.state.pagers + 0;
     },
-    goods() {
-      return this.$store.state.goodsdata;
-    },
-    app_bar_height(){
+        app_bar_height() {
       let size = 0;
       switch (this.$vuetify.breakpoint.name) {
-          case 'xs': size = 100 
-          break
-          case 'sm': size = 100
-          break
-          case 'md': size = 300
-          break
-          case 'lg': size = 300
-          break
-          case 'xl': size = 300
-        }
-        return size
+        case "xs":
+          size = 100;
+          break;
+        case "sm":
+          size = 100;
+          break;
+        case "md":
+          size = 300;
+          break;
+        case "lg":
+          size = 300;
+          break;
+        case "xl":
+          size = 300;
+      }
+      return size;
     },
-    card_height(){
-       let size = 0;
-        switch (this.$vuetify.breakpoint.name) {
-          case 'xs': size = 200 
-          break
-          case 'sm': size = 250
-          break
-          case 'md': size = 250
-          break
-          case 'lg': size = 350
-          break
-          case 'xl': size = 350
-        }
-        return size
-    },
-    img_height(){
-      let size = 0;
-        switch (this.$vuetify.breakpoint.name) {
-          case 'xs': size = 100
-          break
-          case 'sm': size = 150
-          break
-          case 'md': size = 180
-          break
-          case 'lg': size = 180
-          break
-          case 'xl': size = 180
-        }
-        return size
-    },
-    title_class(){
-       let title_form = 0;
-        switch (this.$vuetify.breakpoint.name) {
-          case 'xs': title_form = "text-sm-h6"
-          break
-          case 'sm': title_form = "text-sm-h6"
-          break
-          case 'md': title_form = "text-md-h6"
-          break
-          case 'lg': title_form = "text-lg-h6"
-          break
-          case 'xl': title_form = "text-xl-h6"
-        }
-        return title_form
-    },
-    p_class(){
-      let p_form = 0;
-        switch (this.$vuetify.breakpoint.name) {
-          case 'xs': p_form = "text-xs-caption"
-          break
-          case 'sm': p_form = "text-sm-caption"
-          break
-          case 'md': p_form = "text-md-caption"
-          break
-          case 'lg': p_form = "text-lg-caption"
-          break
-          case 'xl': p_form = "text-xl-caption"
-        }
-        return p_form
-    }
+
 
   },
+  components: {
+    register,
+    login,
+    Goods
 
+  },
   mounted() {
     window.addEventListener("scroll", this.handle);
     /*获取到首页搜索框的值 */
@@ -363,7 +293,6 @@ export default {
   destroyed() {
     window.removeEventListener("scroll", this.handle);
   },
-  components: {},
   methods: {
     gotop() {
       window.scrollTo({
@@ -498,6 +427,7 @@ export default {
       );
       this.gotop();
     },
+
     changevalue() {
       this.checkname = [];
       for (let i = 0; i < this.checked.length; i++) {
@@ -595,6 +525,18 @@ export default {
         }
       );
     },
+    outoflogin() {
+      sessionStorage.setItem("curusername", "");
+      sessionStorage.setItem("isShowusername", false);
+      sessionStorage.setItem("token", "");
+      this.isShowusername = false;
+      this.username = "";
+      this.$router.go(0);
+    },
+    gotocenter() {
+      this.$router.push({ path: "./center" });
+    },
+  
   },
 };
 </script>
@@ -620,24 +562,6 @@ export default {
   background-color: #b88b8b;
   color: #ffffff;
 }
-a {
-  text-decoration: none;
-}
-.text {
-  color: #b88b8b;
-}
-.card_form {
-  height: 100%;
-  overflow: hidden;
-}
-.card_form:hover {
-  box-shadow: 2px 2px 40px 5px gray;
-}
-.img:hover {
-  transition: 0.6s;
-  transform: scale(1.2);
-}
-.price{
-   color: orangered;
-}
+
+
 </style>
