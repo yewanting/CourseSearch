@@ -23,27 +23,28 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-![](img/appHome.png)
+>移动端首页
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appHome.png)
 
-![](img/appDiscovery.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appDiscovery.png)
 
-![](img/appCenter.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appCenter.png)
 
-![](img/appStar.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appStar.png)
 
-![](img/appPlan1.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appPlan1.png)
 
-![](img/appPlan2.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appPlan2.png)
 
-![](img/home.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/home.png)
 
-![](img/discovery.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/discovery.png)
 
-![](img/search.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/search.png)
 
-![](img/star.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/star.png)
 
-![](img/plan.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/plan.png)
 
-![](img/discuss.png)
+![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/discuss.png)
 
