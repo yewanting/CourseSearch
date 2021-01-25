@@ -24,7 +24,8 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 >移动端首页
-![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appHome.png)
+
+![移动端首页](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appHome.png)
 
 ![](https://github.com/yewanting/CourseSearch/tree/vuetify/img/appDiscovery.png)
 
